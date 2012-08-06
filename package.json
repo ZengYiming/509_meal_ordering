@@ -1,0 +1,13 @@
+{
+    "name": "509_meal_ordering",
+    "version": "0.0.1",
+    "main": "./app.js",
+    "private": true,
+    "dependencies": {
+        "express": "2.5.10",
+        "jade": ">=0.27.0",
+        "mysql": ">=0.9.6",
+        "socket.io": "0.9.9",
+        "connect-redis": "1.4.1"
+    }
+}
