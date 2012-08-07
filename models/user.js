@@ -5,6 +5,8 @@
  * Time: 下午4:53
  * To change this template use File | Settings | File Templates.
  */
+var sys = require("sys");
+
 var mysql = require('../dao/mysql.js');
 
 var SimpleDO = require('../dao/simpleDO');
@@ -23,11 +25,11 @@ User.prototype.findOne = function(opt, cb) {
     for(var k in opt) {
         var value = opt[k];
         if(typeof value != 'object' && typeof value != 'array') {
-            /*if(k && k == "loginname") k = "cellphone";
+           /* if(k && k == "loginname") k = "cellphone";
             //where += " AND " + k + " LIKE  '" + value + "'";
             if( typeof value == 'number') {*/
-                where += " AND " + k + " = " + value;
-            /*}
+                where += " AND " + k + " = '" + value + "'";
+          /*  }
             else {
                 where += " AND " + k + " LIKE  '" + value + "'";
             }*/
@@ -39,6 +41,7 @@ User.prototype.findOne = function(opt, cb) {
     mysql.query(sql, function(err, rs) {
         if(err) return cb(err);
         if(!rs.length) return cb(err);
+//        console.log("rs: " + sys.inspect(rs[0]));
         cb(err, rs[0]);
     });
 };
