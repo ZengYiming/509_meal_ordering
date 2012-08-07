@@ -8,6 +8,8 @@
         "jade": ">=0.27.0",
         "mysql": ">=0.9.6",
         "socket.io": "0.9.9",
-        "connect-redis": "1.4.1"
+        "connect-redis": "1.4.0",
+        "eventproxy": ">=0.1.0",
+        "validator": ">=0.4.10"
     }
 }
