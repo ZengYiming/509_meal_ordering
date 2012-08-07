@@ -44,7 +44,7 @@ User.prototype.findOne = function(opt, cb) {
 //        console.log("rs: " + sys.inspect(rs[0]));
         cb(err, rs[0]);
     });
-};
+}; 
 
 /**
  * 查询所有的数据

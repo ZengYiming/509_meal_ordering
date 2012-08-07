@@ -15,9 +15,9 @@ var RedisStore = require("connect-redis")(express);
 var app = express.createServer();
 
 app.configure(function() {
-    var viewsRoot = path.join(__dirname, "view");
+    var viewsRoot = path.join(__dirname, "views");
     app.set("views", viewsRoot);
-    app.set("view engine", "jade");
+    app.set('view engine', 'jade');
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.session({

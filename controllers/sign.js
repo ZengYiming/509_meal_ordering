@@ -1,7 +1,7 @@
 //var models = require('../models');
-var User = require('../models/user');
+var User = require('../models/user')();
 //var Role = models.Role;
-var Member = require('../models/member');
+var Member = require('../models/member')();
 
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
@@ -133,7 +133,7 @@ var notJump = [
  * @param  {Function} next
  */
 exports.login = function(req, res, next) {
-    if (!req.body || !req.body.username || !req.body.password || !req.body.org) {
+    if (!req.body || !req.body.username || !req.body.password) {
         return feedback({status:401, error:'信息不完整。'});
     }    
     var username = sanitize(req.body.username).trim().toLowerCase();
@@ -157,13 +157,13 @@ exports.login = function(req, res, next) {
             }
             else {
                 var user = req.session.user;
-                var data = {
+               /* var data = {
                     _id:user._id,
                     name:user.name,
                     sex:user.sex,
                     role:user.role
-                };
-                res.json(data, result.status);
+                };*//*
+                res.json(data, result.status);*/
             }
         }
         else {
@@ -199,7 +199,7 @@ exports.login = function(req, res, next) {
         // store session cookie
         req.session.regenerate(function() {
             req.session.user = user;
-            Member.findAll({user_id:user._id}, function(err, member) {
+            Member.findByUserId({user_id:user.id}, function(err, member) {
                 if(err) { ep.unbind(); return next(err);}
                 if (!member) return ep.trigger('error', {status:401, error:'此用户无任何角色'});
                 req.session.user.member = member

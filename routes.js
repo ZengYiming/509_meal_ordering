@@ -21,6 +21,7 @@ var authToMember = function(req, res, next) {
 exprots = module.exports = function(app) {
 
     // sign up, login, logout
+    app.get('/signin', sign.showLogin);
     app.post('/signin', sign.login);
     app.get('/signout', sign.signout);
 };

@@ -53,6 +53,42 @@ Member.prototype.findOne_bak = function(opt, cb) {
 
 };
 
+Member.prototype.findByUserId = function(opt, cb) {
+    /*
+     var sql = 'SELECT * FROM member WHERE org_id = '+opt.org+' AND user_id = '+opt.user;
+     mysql.query(sql, function(err, rs) {
+     if(err) return cb(err);
+     if(!rs.length) return cb(err);
+     cb(err, rs[0]);
+     });*/
+
+    /** for view
+     where条件查询具有普遍意义可以封装到mysql.js中，被其他model复用。
+     */
+    where = "";
+    for(var k in opt) {
+        var value = opt[k];
+        /*if(typeof value != 'object' && typeof value != 'array') {
+            if( typeof value == 'number') {*/
+                where += " AND " + k + " = '" + value + "'";
+         /*   }
+            else {
+                where += " AND " + k + " LIKE  '" + value + "'";
+            }
+        }*/
+    }
+
+    var sql = "SELECT * FROM `member` WHERE 1=1"+where;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+        cb(err, rs);
+    });
+
+
+
+};
+
 /**
  * 查询所有的数据
  * @param opt 参数，包含：opt.where， opt.sidx， opt.sord， opt.start ， opt.limit;
