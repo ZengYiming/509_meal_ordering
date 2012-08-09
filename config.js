@@ -13,10 +13,10 @@ exports.config = {
     host: "http://127.0.0.1",
 
     mysql: {
-        host: "127.0.0.1",
+        host: "10.3.4.139",
         port: 3306,
-        user: "root",
-        password: "tiger",
+        user: "viya",
+        password: "123456",
         database: "meal_ordering",
         timezone: "Asia/Shanghai"
     },

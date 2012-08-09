@@ -7,7 +7,7 @@
 		{
 		font: 12px 'Lucida Sans Unicode', 'Trebuchet MS', Arial, Helvetica;    
 		margin: 0;
-		background-color: #d9dee2;
+		background-color: #000000;
 		background-image: -webkit-gradient(linear, left top, left bottom, from(#ebeef2), to(#d9dee2));
 		background-image: -webkit-linear-gradient(top, #ebeef2, #d9dee2);
 		background-image: -moz-linear-gradient(top, #ebeef2, #d9dee2);

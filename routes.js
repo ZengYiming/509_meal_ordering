@@ -7,6 +7,7 @@
  */
 
 var sign = require("./controllers/sign");
+var homepage=require("./controllers/homepage");
 
 var authToMember = function(req, res, next) {
     if(req.session.user) next();
@@ -16,11 +17,13 @@ var authToMember = function(req, res, next) {
         req.session._loginReferer = refer;
         res.render('sign/signin');
     }
-}
+};
 
 exprots = module.exports = function(app) {
 
     // sign up, login, logout
+    app.get('/',homepage.show);
+    app.get('/index',homepage.show);
     app.get('/signin', sign.showLogin);
     app.post('/signin', sign.login);
     app.get('/signout', sign.signout);
