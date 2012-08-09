@@ -26,7 +26,11 @@ exports.find = function(opt, cb) {
             sql += ' AND '+key+' = "'+value+'"';
         } else if(typeof value == 'number') {
             sql += ' AND '+key+' = '+value;
-        } else if(typeof value == 'object') {
+        } else if(typeof value == 'object' && key == '$or') {
+            for(var op in value) {
+                sql += ' OR '+op+' '+value[op];
+            }
+        } else if(typeof value == 'object' && key == '$and') {
             for(var op in value) {
                 sql += ' AND '+op+' '+value[op];
             }

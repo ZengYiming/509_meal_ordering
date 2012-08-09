@@ -1,6 +1,10 @@
 !!! 5
 html
       head
-          title 欢迎登陆
+          - if (typeof(title) == 'undefined') {
+          title 509订餐系统
+          - } else {
+          title #{title}
+          - }
           link(rel='stylesheet',type='text/css',href='/css/style.css')
       body!=body

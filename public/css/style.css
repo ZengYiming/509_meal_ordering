@@ -77,8 +77,8 @@
 		}
 		
 		/*--------------------*/
-		
-		h1
+
+        #login h1
 		{
 		text-shadow: 0 1px 0 rgba(255, 255, 255, .7), 0px 2px 0 rgba(0, 0, 0, .5);
 		text-transform: uppercase;
@@ -89,8 +89,8 @@
 		font: normal 26px/1 Verdana, Helvetica;
 		position: relative;
 		}
-		
-		h1:after, h1:before
+
+        #login h1:after, h1:before
 		{
 		background-color: #777;
 		content: "";
@@ -99,8 +99,8 @@
 		top: 15px;
 		width: 120px;   
 		}
-		
-		h1:after
+
+        #login h1:after
 		{ 
 		background-image: -webkit-gradient(linear, left top, right top, from(#777), to(#fff));
 		background-image: -webkit-linear-gradient(left, #777, #fff);
@@ -110,8 +110,8 @@
 		background-image: linear-gradient(left, #777, #fff);      
 		right: 0;
 		}
-		
-		h1:before
+
+        #login h1:before
 		{
 		background-image: -webkit-gradient(linear, right top, left top, from(#777), to(#fff));
 		background-image: -webkit-linear-gradient(right, #777, #fff);
@@ -123,8 +123,8 @@
 		}
 		
 		/*--------------------*/
-		
-		fieldset
+
+        #login	fieldset
 		{
 		border: 0;
 		padding: 0;
@@ -132,8 +132,8 @@
 		}
 		
 		/*--------------------*/
-		
-		#inputs input
+
+        #login	#inputs input
 		{
 		background: #f1f1f1 url(http://www.red-team-design.com/wp-content/uploads/2011/09/login-sprite.png) no-repeat;
 		padding: 15px 15px 15px 30px;
@@ -147,18 +147,18 @@
 		-webkit-box-shadow: 0 1px 1px #ccc inset, 0 1px 0 #fff;
 		box-shadow: 0 1px 1px #ccc inset, 0 1px 0 #fff;
 		}
-		
-		#username
+
+        #login #username
 		{
 		background-position: 5px -2px !important;
 		}
-		
-		#password
+
+        #login	#password
 		{
 		background-position: 5px -52px !important;
 		}
-		
-		#inputs input:focus
+
+        #login	#inputs input:focus
 		{
 		background-color: #fff;
 		border-color: #e8c291;
@@ -169,12 +169,12 @@
 		}
 		
 		/*--------------------*/
-		#actions
+        #login	#actions
 		{
 		margin: 25px 0 0 0;
 		}
-		
-		#submit
+
+        #login	#submit
 		{		
 		background-color: #ffb94b;
 		background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
@@ -206,8 +206,8 @@
 		font: bold 15px Arial, Helvetica;
 		color: #8f5a0a;
 		}
-		
-		#submit:hover,#submit:focus
+
+        #login	#submit:hover,#submit:focus
 		{		
 		background-color: #fddb6f;
 		background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb94b), to(#fddb6f));
@@ -216,9 +216,9 @@
 		background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);
 		background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);
 		background-image: linear-gradient(top, #ffb94b, #fddb6f);
-		}	
-		
-		#submit:active
+		}
+
+        #login	#submit:active
 		{		
 		outline: none;
 		
@@ -226,13 +226,13 @@
 		-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
 		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;		
 		}
-		
-		#submit::-moz-focus-inner
+
+        #login	#submit::-moz-focus-inner
 		{
 		border: none;
 		}
-		
-		#actions a
+
+        #login	#actions a
 		{
 		color: #3151A2;    
 		float: right;
@@ -241,8 +241,8 @@
 		}
 		
 		/*--------------------*/
-		
-		#back
+
+        #login	#back
 		{
 		display: block;
 		text-align: center;

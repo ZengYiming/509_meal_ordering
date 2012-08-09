@@ -6,10 +6,22 @@
  * To change this template use File | Settings | File Templates.
  */
 
+var site = require("./controllers/site")
 var sign = require("./controllers/sign");
+var customer = require("./controllers/customer");
 
-var authToMember = function(req, res, next) {
-    if(req.session.user) next();
+function auth_role(req, res, next, role) {
+    if(req.session.user) {
+        var user = req.session.user;
+        for(var k in user.member) {
+            if(user.member[k].role == role) {
+                next();
+            }
+            else {
+                res.render('index', {success: '无权限进行此操作'});
+            }
+        }
+    }
     //else res.send(401);
     else{
         var refer = req.headers.referer || 'home';
@@ -18,10 +30,26 @@ var authToMember = function(req, res, next) {
     }
 }
 
+var authToCustomer = function(req, res, next) {
+    auth_role(req, res, next, 1);
+}
+var authToAdm = function(req, res, next) {
+    auth_role(req, res, next, 0);
+}
+var authToRes_adm = function(req, res, next) {
+    auth_role(req, res, next, 1);
+}
+
 exprots = module.exports = function(app) {
+
+    app.get('/', site.index);
 
     // sign up, login, logout
     app.get('/signin', sign.showLogin);
     app.post('/signin', sign.login);
+    app.all('/signup', sign.signup);
     app.get('/signout', sign.signout);
+
+    // customer
+    app.get('/customer/change_info', authToCustomer, customer.change_info);
 };

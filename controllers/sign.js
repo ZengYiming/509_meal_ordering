@@ -1,7 +1,6 @@
-//var models = require('../models');
-var User = require('../models/user')();
-//var Role = models.Role;
-var Member = require('../models/member')();
+var models = require('../models');
+var User = models.User;
+var Member = models.Member;
 
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
@@ -12,94 +11,126 @@ var sanitize = require('validator').sanitize;
 var config = require('../config').config;
 var EventProxy = require('eventproxy').EventProxy;
 
+var sys = require("sys");
+
 //var Log = require('../log.js');
 //var log = Log.create(Log.INFO, {'file':'public/node.debug'});
 //var MQClient = require('../libs/mq_client.js');
 
-/*
-var message_ctrl = require('./message');
-var mail_ctrl = require('./mail');
+
+/*var message_ctrl = require('./message');
+var mail_ctrl = require('./mail');*/
 
 //sign up
 exports.signup = function(req,res,next){
+    var ep = EventProxy.create();
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('user', function(user_id) {
+        createMember(user_id);
+    });
+    ep.on('user', function(user_id) {
+        res.render('index', {success: '注册成功。'});
+    });
+
 	var method = req.method.toLowerCase();
 	if(method == 'get'){
-		res.render('sign/signup');
+		res.render('sign/signup.jade',{title: '用户注册'});
 		return;
 	}
 	if(method == 'post'){
-		var name = sanitize(req.body.name).trim();
-		name = sanitize(name).xss();
-		var loginname = name.toLowerCase();
-		var pass = sanitize(req.body.pass).trim();
+		var username = sanitize(req.body.username).trim();
+		username = sanitize(username).xss();
+		username = username.toLowerCase();
+		var pass = sanitize(req.body.password).trim();
 		pass = sanitize(pass).xss();
+        var re_pass = sanitize(req.body.re_pass).trim();
+        re_pass = sanitize(re_pass).xss();
+        var name = sanitize(req.body.name).trim();
+        name = sanitize(name).xss();
+        var tel = sanitize(req.body.tel).trim();
+        tel = sanitize(tel).xss();
 		var email = sanitize(req.body.email).trim();
 		email = email.toLowerCase();
 		email = sanitize(email).xss();
-		var re_pass = sanitize(req.body.re_pass).trim();
-		re_pass = sanitize(re_pass).xss();
 		
-		if(name == '' || pass =='' || re_pass == '' || email ==''){
-			res.render('sign/signup', {error:'信息不完整。',name:name,email:email});
+		if(username == '' || pass =='' || re_pass == '' || tel ==''){
+			res.render('sign/signup.jade', {error:'信息不完整。',name:name,tel:tel,email:email});
 			return;
 		}
 
-		if(name.length < 5){
-			res.render('sign/signup', {error:'用户名至少需要5个字符。',name:name,email:email});
+		if(username.length < 6){
+			res.render('sign/signup.jade', {error:'用户名至少需要6个字符。',name:name,tel:tel,email:email});
 			return;
 		}
+
+        if(pass.length < 6){
+            res.render('sign/signup.jade', {error:'密码至少需要6个字符。',name:name,tel:tel,email:email});
+            return;
+        }
 
 		try{
-			check(name, '用户名只能使用0-9，a-z，A-Z。').isAlphanumeric();
+			check(username, '用户名只能使用0-9，a-z，A-Z。').isAlphanumeric();
 		}catch(e){
-			res.render('sign/signup', {error:e.message,name:name,email:email});
+			res.render('sign/signup.jade', {error:e.message,name:name,tel:tel,email:email});
 			return;
 		}
 
 		if(pass != re_pass){
-			res.render('sign/signup', {error:'两次密码输入不一致。',name:name,email:email});
+			res.render('sign/signup.jade', {error:'两次密码输入不一致。',name:name,tel:tel,email:email});
 			return;
 		}
 			
 		try{
 			check(email, '不正确的电子邮箱。').isEmail();
 		}catch(e){
-			res.render('sign/signup', {error:e.message,name:name,email:email});
+			res.render('sign/signup.jade', {error:e.message,name:name,tel:tel,email:''});
 			return;
 		}
 
-		User.find({'$or':[{'loginname':loginname},{'email':email}]},function(err,users){
+		User.find({'username':username},function(err,users){
 			if(err) return next(err);
 			if(users.length > 0){
-				res.render('sign/signup', {error:'用户名或邮箱已被使用。',name:name,email:email});
+				res.render('sign/signup', {error:'用户名已被使用。',name:name,tel:tel,email:email});
 				return;
 			}
 			
-			// md5 the pass
+			/*// md5 the pass
 			pass = md5(pass);
 			// create gavatar
-			var avatar_url = 'http://www.gravatar.com/avatar/' + md5(email) + '?size=48';
+			var avatar_url = 'http://www.gravatar.com/image/' + md5(email) + '?size=48';*/
 
-			var user = new User();
-			user.name = name;
-			user.loginname = loginname;
-			user.pass = pass;
-			user.email = email;
-			user.avatar = avatar_url;
-			user.active = false;
-			user.save(function(err){
+			var body = {username: username, password: pass, name: name, tel: tel, email: email};
+
+			User.create(body, function(err, info){
 				if(err) return next(err);
-				mail_ctrl.send_active_mail(email,md5(email+config.session_secret),name,email,function(err,success){
+                if(info) {
+                    ep.trigger('user', info.insertId);
+                 //   res.render('index', {success: '注册成功。'});
+                 //   return;
+                }
+				/*mail_ctrl.send_active_mail(email,md5(email+config.session_secret),name,email,function(err,success){
 					if(success){
-						res.render('sign/signup', {success:'欢迎加入 ' + config.name + '！我们已给您的注册邮箱发送了一封邮件，请点击里面的链接来激活您的帐号。'});
+						res.render('home', {success:'欢迎加入 ' + config.name + '！我们已给您的注册邮箱发送了一封邮件，请点击里面的链接来激活您的帐号。'});
 						return;
 					}
-				});
+				});*/
 			});
 		});
+
+        function createMember(userId) {
+            var body = {role: 1, user_id: userId}
+            Member.create(body, function(err, info) {
+                if(err) return next(err);
+                if(info) {
+                    ep.trigger('member')
+                }
+            });
+        }
 	}
 };
-*/
 /**
  * Show user login page.
  * 
@@ -108,11 +139,13 @@ exports.signup = function(req,res,next){
  */
 exports.showLogin = function(req, res) {
     var refer = req.headers.referer || 'home';
+//    console.log("in sign.js, req.headers: " + sys.inspect(req.headers))
+//    console.log("in sign.js, req.session.user: " + sys.inspect(req.session.user));
     if(req.session.user) {
         res.redirect(refer);
     } else {
         req.session._loginReferer = refer;
-        res.render('sign/signin');
+        res.render('sign/signin', {title: '欢迎登陆', error: ''});
     }
 };
 /**
@@ -122,7 +155,7 @@ exports.showLogin = function(req, res) {
 var notJump = [
 //  '/active_account', //active page
 //  '/reset_pass',     //reset password page, avoid to reset twice
-  '/signup'         //regist page
+  '/signup.jade'         //regist page
 //  '/search_pass'    //serch pass page
 ];
 /**
@@ -167,7 +200,7 @@ exports.login = function(req, res, next) {
             }
         }
         else {
-            if(req.accepts('html')) res.render('sign/signin', {error:result.error});
+            if(req.accepts('html')) res.render('sign/signin', {error:result.error, title:'欢迎登陆'});
             else res.send(result.status);
         }
     };
@@ -176,7 +209,7 @@ exports.login = function(req, res, next) {
         ep.unbind();//remove all event
         return feedback(result);
     });
-    ep.on('member', function(member) { 
+    ep.on('member', function() {
 //        findRole(member.role_id);
         feedback({status:200, error:'登陆成功'});
     });
@@ -203,7 +236,7 @@ exports.login = function(req, res, next) {
                 if(err) { ep.unbind(); return next(err);}
                 if (!member) return ep.trigger('error', {status:401, error:'此用户无任何角色'});
                 req.session.user.member = member
-                ep.trigger('member', member);
+                ep.trigger('member');
             });
         });
         //gen_session(user, res);

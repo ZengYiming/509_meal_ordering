@@ -1,0 +1,35 @@
+form(id='signup', method='post', action='/signup')
+    ul
+        - if (typeof(error) !== 'undefined') {
+        #{error}
+        - }
+        - var this_name = '', this_tel = '', this_email = '';
+        -if(typeof(name) !== 'undefined') {
+         -   this_name = name
+        -}
+        -if(typeof(tel) !== 'undefined') {
+        -   this_tel = tel
+        -}
+        -if(typeof(email) !== 'undefined') {
+        -   this_email = email
+        -}
+        li
+            h3 用户名*
+            input(id='username',name='username',type='text',placeholder='用户名')
+        li
+            h3 密码*
+            input(id='password',name='password',type='password',placeholder='密码')
+        li
+            h3 确认密码*
+            input(id='re_pass',name='re_pass',type='password',placeholder='确认密码')
+        li
+            h3 姓名*
+            input(id='name',name='name',type='text',placeholder='姓名', value='#{this_name}')
+        li
+            h3 联系电话*
+            input(id='tel',name='tel',type='text',placeholder='联系电话', value='#{this_tel}')
+        li
+            h3 Email
+            input(id='email',name='email',type='text',placeholder='电子邮箱', value='#{this_email}')
+
+    input(type='submit',id='submit',value='注册')

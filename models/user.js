@@ -36,7 +36,7 @@ User.prototype.findOne = function(opt, cb) {
         }
     }
 
-    //var sql = "SELECT * FROM `ef_user` WHERE `cellphone` LIKE '"+opt.loginname+"'";
+    //var sql = "SELECT * FROM `user` WHERE `cellphone` LIKE '"+opt.loginname+"'";
     var sql = "SELECT * FROM `user` WHERE 1=1 "+where;
     mysql.query(sql, function(err, rs) {
         if(err) return cb(err);
@@ -44,7 +44,7 @@ User.prototype.findOne = function(opt, cb) {
 //        console.log("rs: " + sys.inspect(rs[0]));
         cb(err, rs[0]);
     });
-}; 
+};
 
 /**
  * 查询所有的数据
@@ -52,7 +52,7 @@ User.prototype.findOne = function(opt, cb) {
  * @param cb 回调
  */
 User.prototype.findAll = function(opt, cb) {
-    var sql = " SELECT * FROM ef_user  "
+    var sql = " SELECT * FROM user  "
         +" where 1=1 "+ opt.where;
     if(opt.sidx && opt.sord) sql += " ORDER BY "+opt.sidx+" "+opt.sord;
     if(opt.limit) sql += " LIMIT "+ opt.start + " , "+opt.limit;
@@ -69,7 +69,7 @@ User.prototype.findAll = function(opt, cb) {
  * @param cb 回调
  */
 User.prototype.count = function(opt, cb) {
-    var sql = "SELECT COUNT(*) AS count FROM ef_user where 1=1 "+opt.where;
+    var sql = "SELECT COUNT(*) AS count FROM user where 1=1 "+opt.where;
     mysql.query(sql, function(err, rs) {
         if(err) return cb(err);
         if(!rs.length) return cb(err);
@@ -84,7 +84,7 @@ User.prototype.count = function(opt, cb) {
  */
 User.prototype.create = function(body, cb) {
     var opt = {
-        table: 'ef_user',
+        table: 'user',
         fields: body
     };
     mysql.insert(opt, function(err, info) {
@@ -99,7 +99,7 @@ User.prototype.create = function(body, cb) {
  * @param cb 回调
  */
 User.prototype.delete = function(ids, cb) {
-    var sql = " delete from ef_user where _id in(" + ids + ") ";
+    var sql = " delete from user where _id in(" + ids + ") ";
     mysql.query(sql, function(err, rs) {
         if(err) return cb(err);
         cb(err, rs);
@@ -113,7 +113,7 @@ User.prototype.delete = function(ids, cb) {
  */
 User.prototype.update = function(body, cb) {
     var opt = {
-        table: 'ef_user',
+        table: 'user',
         fields: body
     };
     mysql.update(opt, function(err, info) {
@@ -137,7 +137,7 @@ exports = module.exports = createUser;
  signature: { type: String },
  profile: { type: String },
  weibo: { type: String },
- avatar: { type: String },
+ image: { type: String },
 
  score: { type: Number, default: 0 },
  topic_count: { type: Number, default: 0 },
