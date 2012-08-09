@@ -10,6 +10,7 @@
         "socket.io": "0.9.9",
         "connect-redis": "1.4.0",
         "eventproxy": ">=0.1.0",
-        "validator": ">=0.4.10"
+        "validator": ">=0.4.10",
+        "formidable": "1.0.11"
     }
 }

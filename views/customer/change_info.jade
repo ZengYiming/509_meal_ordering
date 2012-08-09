@@ -1,14 +1,19 @@
-script(type='text/javascript', src='/js/change_info.js')
-form(id='change_info', method='post', action='/change_info')
+
+- if (typeof(error) !== 'undefined') {
+    = error
+- }
+form(id='change_avatar',name='change_avatar', method='post',enctype="multipart/form-data", action='/customer/change_avatar')
+    div
+        h3 头像:
+        img(src='#{avatar_src}',name='avatar', alt='avatar', height=100, width=100)
+        br
+        input(id='upload',name='upload', type='file', multiple='multiple')
+        input(id='submit_upload',name='submit_upload', type='submit', value='更改头像')
+
+
+form(id='change_info', method='post', action='/customerchange_info')
     ul
-        - if (typeof(error) !== 'undefined') {
-            = error
-        - }
-        li
-            h3 头像:
-            img(src='#{avatar_src}', alt='avatar', height=100, width=100)
-            br
-            button(id='update_img',type='button', onclick='update_img()') 更改头像
+
         li
             h3 用户名:
             h4 #{username}

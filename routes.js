@@ -51,5 +51,6 @@ exprots = module.exports = function(app) {
     app.get('/signout', sign.signout);
 
     // customer
-    app.get('/customer/change_info', authToCustomer, customer.change_info);
+    app.all('/customer/change_info', authToCustomer, customer.change_info);
+    app.post('/customer/change_avatar', authToCustomer, customer.change_avatar);
 };

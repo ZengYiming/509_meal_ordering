@@ -81,7 +81,7 @@ exports.update = function(opt, cb) {
         }
     }
     sql = sql.slice(0,-2);
-    sql += "  where "+opt.table+'.'+"_id="+opt.fields._id;
+    sql += "  where "+opt.table+'.'+"id="+opt.fields.id;
 
 
     console.log(sql,values);
