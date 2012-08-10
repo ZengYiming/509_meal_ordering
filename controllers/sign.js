@@ -31,7 +31,7 @@ exports.signup = function(req,res,next){
     ep.on('user', function(user_id) {
         createMember(user_id);
     });
-    ep.on('user', function(user_id) {
+    ep.on('member', function(user_id) {
         res.render('index', {success: '注册成功。'});
     });
 
@@ -177,6 +177,7 @@ exports.login = function(req, res, next) {
     function feedback(result) {
 //        MQClient.pub('UserLogin', req.session.user);
         if(200 == result.status) {
+            var user = req.session.user;
             if(req.accepts('html')) {
                 //check at some page just jump to home page 
                 var refer = req.session._loginReferer || 'home';
@@ -211,6 +212,13 @@ exports.login = function(req, res, next) {
     });
     ep.on('member', function() {
 //        findRole(member.role_id);
+        var user = req.session.user;
+        for(var k in user.member) {
+            if(user.member[k].role == 0) {
+                //跳转到admin页面
+                return;
+            }
+        }
         feedback({status:200, error:'登陆成功'});
     });
 /*    ep.on('role', function() {
@@ -230,15 +238,15 @@ exports.login = function(req, res, next) {
 //        if (!user.state) return feedback({status:403, error:'此帐号还没有被激活。'});
         if (pass !== user.password) return feedback({status:401, error:'密码错误。'});
         // store session cookie
-        req.session.regenerate(function() {
+      //  req.session.regenerate(function() {
             req.session.user = user;
             Member.findByUserId({user_id:user.id}, function(err, member) {
                 if(err) { ep.unbind(); return next(err);}
                 if (!member) return ep.trigger('error', {status:401, error:'此用户无任何角色'});
-                req.session.user.member = member
+                req.session.user.member = member;
                 ep.trigger('member');
             });
-        });
+      //  });
         //gen_session(user, res);
     });
     

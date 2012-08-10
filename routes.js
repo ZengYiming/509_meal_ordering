@@ -6,6 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 
+var sys = require("sys");
+
 var site = require("./controllers/site")
 var sign = require("./controllers/sign");
 var customer = require("./controllers/customer");
@@ -16,11 +18,10 @@ function auth_role(req, res, next, role) {
         for(var k in user.member) {
             if(user.member[k].role == role) {
                 next();
-            }
-            else {
-                res.render('index', {success: '无权限进行此操作'});
+                return;
             }
         }
+        res.render('index', {success: '无权限进行此操作'});
     }
     //else res.send(401);
     else{
@@ -37,7 +38,7 @@ var authToAdm = function(req, res, next) {
     auth_role(req, res, next, 0);
 }
 var authToRes_adm = function(req, res, next) {
-    auth_role(req, res, next, 1);
+    auth_role(req, res, next, 2);
 }
 
 exprots = module.exports = function(app) {
@@ -52,5 +53,4 @@ exprots = module.exports = function(app) {
 
     // customer
     app.all('/customer/change_info', authToCustomer, customer.change_info);
-    app.post('/customer/change_avatar', authToCustomer, customer.change_avatar);
 };

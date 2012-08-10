@@ -12,6 +12,8 @@ var routes = require("./routes");
 var config = require("./config").config;
 var RedisStore = require("connect-redis")(express);
 
+delete express.bodyParser.parse['multipart/form-data'];
+
 var app = express.createServer();
 
 app.configure(function() {
@@ -23,7 +25,7 @@ app.configure(function() {
     app.use(express.session({
         store: new RedisStore({host: config.redis.host}),
         secret: config.session_secret,
-        cookie: config.session_cookid
+        cookie: config.session_cookie
     }));
     app.use(express.methodOverride());
 });

@@ -2,18 +2,14 @@
 - if (typeof(error) !== 'undefined') {
     = error
 - }
-form(id='change_avatar',name='change_avatar', method='post',enctype="multipart/form-data", action='/customer/change_avatar')
-    div
-        h3 头像:
-        img(src='#{avatar_src}',name='avatar', alt='avatar', height=100, width=100)
-        br
-        input(id='upload',name='upload', type='file', multiple='multiple')
-        input(id='submit_upload',name='submit_upload', type='submit', value='更改头像')
 
 
-form(id='change_info', method='post', action='/customerchange_info')
+form(id='change_avatar',name='change_avatar', method='post',enctype="multipart/form-data", action='/customer/change_info')
     ul
-
+        li
+            h3 更改头像:
+            img(src='#{avatar_src}',name='avatar', alt='avatar', height=100, width=100)
+            input(id='upload',name='upload', type='file', multiple='multiple')
         li
             h3 用户名:
             h4 #{username}
@@ -26,6 +22,5 @@ form(id='change_info', method='post', action='/customerchange_info')
         li
             h3 Email:
             input(id='email',name='email',type='text',placeholder='电子邮箱', value='#{email}')
-            input(id='id', name='id', type='hidden',value='#{id}')
-
-    input(type='submit',id='submit',value='提交')
+        li
+            input(type='submit',name='submit', id='submit',value='提交')

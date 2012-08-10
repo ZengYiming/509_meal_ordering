@@ -7,4 +7,16 @@ html
           title #{title}
           - }
           link(rel='stylesheet',type='text/css',href='/css/style.css')
-      body!=body
+          script(type='text/javascript', src='/js/headline.js')
+      body
+
+        table#headtable
+            tr#headline
+                th
+                    a(href='http://localhost:8888/signin') 登录
+                th
+                    a(href='http://localhost:8888/signout') 退出
+                th
+                    a(href='http://localhost:8888/customer/change_info')更改用户信息
+
+        !=body
