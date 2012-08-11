@@ -1,0 +1,14 @@
+deployProduct.sh
+node_modules
+
+.naeindex
+
+
+.npmignore
+.monitor
+.nide
+.idea
+.DS_Store
+
+deployStaging.sh
+deployProduction.sh

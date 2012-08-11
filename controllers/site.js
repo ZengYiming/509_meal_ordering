@@ -15,7 +15,6 @@ exports.index = function(req,res,next){
 //    res.redirect('/signin');
 };
 
-/*function UserLogin(user) {
-    log.info("Site Got UserLogin");
+exports.headLine = function (req, res, next) {
+
 }
-MQClient.sub('UserLogin', UserLogin);*/

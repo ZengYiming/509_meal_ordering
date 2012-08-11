@@ -32,7 +32,7 @@ exports.signup = function(req,res,next){
         createMember(user_id);
     });
     ep.on('member', function(user_id) {
-        res.render('index', {success: '注册成功。'});
+        res.render('index', {error: '注册成功。'});
     });
 
 	var method = req.method.toLowerCase();

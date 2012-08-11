@@ -21,7 +21,7 @@ function auth_role(req, res, next, role) {
                 return;
             }
         }
-        res.render('index', {success: '无权限进行此操作'});
+        res.render('index', {error: '无权限进行此操作'});
     }
     //else res.send(401);
     else{
@@ -44,6 +44,7 @@ var authToRes_adm = function(req, res, next) {
 exprots = module.exports = function(app) {
 
     app.get('/', site.index);
+    app.post('/headline',site.headLine);
 
     // sign up, login, logout
     app.get('/signin', sign.showLogin);
