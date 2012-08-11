@@ -7,6 +7,7 @@
  */
 
 var headline = document.getElementById('headline');
+var inner_html = '<th><a href="http://localhost:8888/">首页</a></th>';
 
 window.onload = function() {
 
@@ -25,5 +26,22 @@ function setHeadLine() {
     }
 
     xmlhttp.open("post", "http://localhost:8888/headline/", true);
+    //xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    //xmlhttp.send("fname=Bill&lname=Gates");
     xmlhttp.send();
+
+    xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+            var text = xmlhttp.responseText;
+            if(text) {
+                var hl = JSON.parse(text);
+                if(hl) {
+
+                }
+            }else {
+                inner_html += '<th><a href="http://localhost:8888/signin/">登录</a></th>' + '<th><a href="http://localhost:8888/signup/">注册</a></th>';
+            }
+        }
+        headline.innerHTML = inner_html;
+    }
 }

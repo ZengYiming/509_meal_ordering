@@ -3,7 +3,7 @@ node_modules
 
 .naeindex
 
-
+config.js
 .npmignore
 .monitor
 .nide

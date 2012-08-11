@@ -121,7 +121,7 @@ exports.signup = function(req,res,next){
 		});
 
         function createMember(userId) {
-            var body = {role: 1, user_id: userId}
+            var body = {role: 1, user_id: userId, credits: 0}
             Member.create(body, function(err, info) {
                 if(err) return next(err);
                 if(info) {

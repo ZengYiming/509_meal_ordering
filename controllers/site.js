@@ -16,5 +16,24 @@ exports.index = function(req,res,next){
 };
 
 exports.headLine = function (req, res, next) {
-
+    var headline;
+    if(req.session.user) {
+        var user = req.session.user;
+        headline = {name: user.name};
+        for(var k in user.member) {
+            if(user.member[k].role == 1) {
+                headline.credits = user.member[k].credits;
+                headline.shopping_cart = true;
+            }
+            else if(user.member[k].role == 0) {
+                headline.background = true;
+            }
+            else if(user.member[k].role == 2) {
+                headline.resadm = true;
+            }
+        }
+    }else {
+        headline = '';
+    }
+    res.write(headline.toString());
 }
