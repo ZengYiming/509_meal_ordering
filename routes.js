@@ -54,4 +54,6 @@ exprots = module.exports = function(app) {
 
     // customer
     app.all('/customer/change_info', authToCustomer, customer.change_info);
+    app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
+    app.post('/adm/change_customer_info_success',authToAdm,adm.change_customer_info_success);
 };
