@@ -11,6 +11,7 @@ var sys = require("sys");
 var site = require("./controllers/site")
 var sign = require("./controllers/sign");
 var customer = require("./controllers/customer");
+var adm = require("./controllers/adm");
 
 function auth_role(req, res, next, role) {
     if(req.session.user) {
@@ -54,6 +55,7 @@ exprots = module.exports = function(app) {
 
     // customer
     app.all('/customer/change_info', authToCustomer, customer.change_info);
+    app.get('/adm/adm_control_panel', authToAdm,adm.adm_control_panel);
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
     app.post('/adm/change_customer_info_success',authToAdm,adm.change_customer_info_success);
 };

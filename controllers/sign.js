@@ -216,6 +216,7 @@ exports.login = function(req, res, next) {
         for(var k in user.member) {
             if(user.member[k].role == 0) {
                 //跳转到admin页面
+                res.render('adm/adm_control_panel',{title: '系统管理员控制面板'});
                 return;
             }
         }

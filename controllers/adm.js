@@ -19,6 +19,9 @@ var check = require('validator').check;
 var sanitize = require('validator').sanitize;
 var config = require('../config').config;
 
+exports.adm_control_panel = function(req, res, next){
+    res.render('adm/adm_control_panel',{title: '系统管理员控制面板'});
+};
 exports.change_customer_info = function(req, res, next){
     res.render('adm/change_customer_info',{title: '更改用户信息'});
 };
