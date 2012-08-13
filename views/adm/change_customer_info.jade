@@ -5,8 +5,8 @@ form(id='change_customer_info_success', method='post', action='/adm/change_custo
             = error
         - }
         li
-            table(id='change_customer_info_table')
-            div(id='change_customer_info_pager')
+            table#change_customer_info_table
+            #change_customer_info_pager
         li
             h3 用户名:
             input(id='name',name='name',type='text',placeholder='姓名')
