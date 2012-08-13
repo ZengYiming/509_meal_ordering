@@ -73,7 +73,9 @@ exprots = module.exports = function(app) {
     app.all('/user/change_psw', auth, user.change_psw);
 
     // customer
-    app.all('/customer/change_info', authToCustomer, customer.change_info);
+    app.all('/customer/shopping_cart', authToCustomer, shopping_cart.add);
+
+    //adm
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
     app.post('/adm/change_customer_info_success',authToAdm,adm.change_customer_info_success);
 };
