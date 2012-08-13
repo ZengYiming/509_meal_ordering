@@ -13,17 +13,10 @@ exports.config = {
     host: "http://127.0.0.1",
 
     mysql: {
-<<<<<<< HEAD
         host: "127.0.0.1",
         port: 3306,
         user: "root",
         password: "root",
-=======
-        host: "10.3.4.139",
-        port: 3306,
-        user: "viya",
-        password: "123456",
->>>>>>> 8677dd4... local branch 系统管理员添加表格
         database: "meal_ordering",
         timezone: "Asia/Shanghai"
     },
