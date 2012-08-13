@@ -8,9 +8,22 @@
 
 var sys = require("sys");
 
-var site = require("./controllers/site")
+var site = require("./controllers/site");
 var sign = require("./controllers/sign");
 var customer = require("./controllers/customer");
+var user = require("./controllers/user");
+var shopping_cart = require("./controllers/shopping_cart");
+
+function auth(req, res, next) {
+    if(req.session.user) {
+        next();
+        return;
+    }else {
+        var refer = req.header.referer || 'home';
+        req.session._loginReferer = refer;
+        res.render('sign/signin');
+    }
+}
 
 function auth_role(req, res, next, role) {
     if(req.session.user) {
@@ -43,8 +56,10 @@ var authToRes_adm = function(req, res, next) {
 
 exprots = module.exports = function(app) {
 
+    //site
     app.get('/', site.index);
-    app.post('/headline',site.headLine);
+    app.post('/headline', site.headLine);
+    app.get('/dish_info', site.dish_info);
 
     // sign up, login, logout
     app.get('/signin', sign.showLogin);
@@ -52,6 +67,11 @@ exprots = module.exports = function(app) {
     app.all('/signup', sign.signup);
     app.get('/signout', sign.signout);
 
+    //user
+    app.all('/user/change_info', auth, user.change_info);
+    app.get('/user/index', auth, user.index);
+    app.all('/user/change_psw', auth, user.change_psw);
+
     // customer
-    app.all('/customer/change_info', authToCustomer, customer.change_info);
+    app.post('/customer/shopping_cart', authToCustomer, shopping_cart.add);
 };

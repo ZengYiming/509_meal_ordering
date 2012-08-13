@@ -153,10 +153,9 @@ exports.showLogin = function(req, res) {
  * @type {Array}
  */
 var notJump = [
-//  '/active_account', //active page
-//  '/reset_pass',     //reset password page, avoid to reset twice
-  '/signup.jade'         //regist page
-//  '/search_pass'    //serch pass page
+    '/user/change_psw', //password changing page
+    '/signup',         //regist page
+    '/user/change_info'
 ];
 /**
  * Handle user login.

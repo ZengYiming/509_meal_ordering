@@ -2,3 +2,16 @@
 - if (typeof(error) !== 'undefined') {
     != error
 - }
+
+table
+    tr
+        th
+            菜品名
+        th
+            价格
+    - each res in dishes
+        tr
+            th
+                a(href="http://localhost:8888/dish_info?id=#{res.id}") #{res.name}
+            th
+                = res.price

@@ -10,4 +10,4 @@ exports.Member = require("./member")();
 exports.Dish = require("./dish")();
 exports.Orders = require("./orders")();
 exports.Order_dish = require("./order_dish")();
-exports.restaurant = require("./restaurant")();
+exports.Restaurant = require("./restaurant")();

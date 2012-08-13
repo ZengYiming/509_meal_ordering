@@ -16,5 +16,18 @@ function createRestaurant() {
 function Restaurant() {
 };
 
+Restaurant.prototype = new SimpleDO('`restaurant`');
+
+Restaurant.prototype.findAll = function(opt, cb) {
+    var sql = " SELECT * FROM restaurant  "
+        +" where 1=1 ";
+    if(opt.sidx && opt.sord) sql += " ORDER BY "+opt.sidx+" "+opt.sord;
+    if(opt.limit) sql += " LIMIT "+ opt.start + " , "+opt.limit;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+        cb(err, rs);
+    });
+}
 
 exports = module.exports = createRestaurant;

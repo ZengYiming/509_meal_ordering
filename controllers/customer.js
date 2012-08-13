@@ -17,7 +17,10 @@ var fs = require('fs');
 var path = require('path');
 var sys = require('sys');
 
-exports.change_info = function(req, res, next) {
+
+
+
+/*exports.change_info = function(req, res, next) {
     var method = req.method.toLowerCase();
 
     function feedback(err) {
@@ -106,7 +109,7 @@ exports.change_info = function(req, res, next) {
         }
     }
     return;
-}
+}*/
 
 
 /*
