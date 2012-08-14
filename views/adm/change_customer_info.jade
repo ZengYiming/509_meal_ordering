@@ -1,30 +1,20 @@
 script(type='text/javascript', src='/js/adm/change_customer_info.js')
 form(id='change_customer_info_success', method='post', action='/adm/change_customer_info_success')
-    ul
-        - if (typeof(error) !== 'undefined') {
-            = error
-        - }
-        li
-            table#change_customer_info_table
-            #change_customer_info_pager
-        li
-            h3 用户名:
-            input(id='name',name='name',type='text',placeholder='姓名')
-        li
-            h3 头像:
-            img(src='/image/avatar/default_avatar.gif', alt='avatar', height=100, width=100)
-            br
-            button(id='update_img',type='button', onclick='update_img()') 更改头像
 
-        li
-            h3 姓名:
-            input(id='name',name='name',type='text',placeholder='姓名')
-        li
-            h3 联系电话:
-            input(id='tel',name='tel',type='text',placeholder='联系电话')
-        li
-            h3 Email:
-            input(id='email',name='email',type='text',placeholder='电子邮箱')
-            input(id='id', name='id', type='hidden')
-
-        input(type='submit',id='submit',value='提交更改')
+    - if (typeof(error) !== 'undefined') {
+        = error
+    - }
+    h1 用户管理
+    table(border='0', width='100%')
+            tr
+                td
+                    form
+                        table(border='0', width='100%')
+                            ////////////////////////增删改区域Start
+                            tr
+                                td(width='100%', align='left', valign='baseline', colspan=4)
+                                    #page_operate(style='visibility:none;')
+                                        input#edit_btn.btn(type='button', value='修改用户信息')
+                                        input#del_btn.btn(type='button', value='删除用户')
+    table#change_customer_info_table
+    #change_customer_info_pager

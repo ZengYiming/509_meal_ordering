@@ -55,8 +55,12 @@ exprots = module.exports = function(app) {
 
     // customer
     app.all('/customer/change_info', authToCustomer, customer.change_info);
+    //adm
     app.get('/adm/adm_control_panel', authToAdm,adm.adm_control_panel);
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
     app.get('/adm/change_customer_info/findall',authToAdm,adm.findallusers);
     app.post('/adm/change_customer_info_success',authToAdm,adm.change_customer_info_success);
+    app.get('/adm/change_restaurant_info',authToAdm,adm.change_restaurant_info);
+    app.get('/adm/change_restaurant_info/findall',authToAdm,adm.findallrestaurants);
+    app.post('/adm/change_restaurant_info_success',authToAdm,adm.change_restaurant_info_success);
 };

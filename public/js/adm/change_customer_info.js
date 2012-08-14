@@ -22,10 +22,10 @@ var colNames = ['编号', '用户名', '密码', '姓名','电话','电子邮件
 //设置前台页面显示的表格数据
 var colModel = [
     {name:'id',index:'id', width:100, align:"center",sortable:true},
-    {name:'username',index:'username', width:200, align:"center",sortable:true},
-    {name:'password',index:'password', width:200, align:"center",sortable:true, hidden:true},
-    {name:'name',index:'name', width:200, align:"center",sortable:true},
-    {name:'tel',index:'tel', width:200, align:"center",sortable:true},
+    {name:'username',index:'username', width:100, align:"center",sortable:true},
+    {name:'password',index:'password', width:100, align:"center",sortable:true},
+    {name:'name',index:'name', width:100, align:"center",sortable:true},
+    {name:'tel',index:'tel', width:100, align:"center",sortable:true},
     {name:'email',index:'email', width:200,align:"center",sortable:true},
     {name:'image',index:'image', width:200, align:"center",sortable:true}];
 $(function(){
@@ -42,7 +42,7 @@ $(function(){
         rowList:[10,20,30],
         pager: '#change_customer_info_pager',
         sortname: 'id',
-        sortorder:'desc',
+        sortorder:'asc',
         viewrecords: true,
         caption:"用户列表",
         autowidth: true, //自动匹配宽度
@@ -65,10 +65,6 @@ $(function(){
 //            $("#del_btn").attr("disabled",true);
 //        }
     });
-//    var mydata = [
-//        {id:"1",username:"polaris",password:"111",name:"polaris",tel:"123",email:"fef@163.com",image:""}];
-//    for(var i=0;i<=mydata.length;i++)
-//        jQuery("#change_customer_info_table").jqGrid('addRowData',i+1,mydata[i]);
 //    $("#popDialog").dialog({
 //        autoOpen: false,
 //        modal: true,
