@@ -1,8 +1,5 @@
 form(id='signup', method='post', action='/signup')
     ul
-        - if (typeof(error) !== 'undefined') {
-        #{error}
-        - }
         - var this_name = '', this_tel = '', this_email = '';
         -if(typeof(name) !== 'undefined') {
          -   this_name = name

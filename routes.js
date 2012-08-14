@@ -13,6 +13,8 @@ var sign = require("./controllers/sign");
 var customer = require("./controllers/customer");
 var user = require("./controllers/user");
 var shopping_cart = require("./controllers/shopping_cart");
+var adm = require("./controllers/adm");
+var order = require("./controllers/order");
 
 function auth(req, res, next) {
     if(req.session.user) {
@@ -34,7 +36,9 @@ function auth_role(req, res, next, role) {
                 return;
             }
         }
+
         res.render('index', {error: '无权限进行此操作'});
+
     }
     //else res.send(401);
     else{
@@ -73,7 +77,11 @@ exprots = module.exports = function(app) {
     app.all('/user/change_psw', auth, user.change_psw);
 
     // customer
-    app.all('/customer/shopping_cart', authToCustomer, shopping_cart.add);
+    app.post('/customer/shopping_cart_add', authToCustomer, shopping_cart.add);
+    app.get('/customer/shopping_cart_del', authToCustomer, shopping_cart.del);
+    app.get('/customer/shopping_cart', authToCustomer, shopping_cart.show);
+    app.get('/customer/shopping_cart_clear', authToCustomer, shopping_cart.clear);
+    app.all('/customer/order_add', authToCustomer, order.add);
 
     //adm
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);

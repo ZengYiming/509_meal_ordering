@@ -1,28 +1,30 @@
-- if (typeof(error) !== 'undefined') {
-    != error
-- }
-form(id="dish_info", name="dish_info", method="post", action="/customer/shopping_cart")
-table
-    tr
-        th
-            菜品名
-        th
-            价格
-        th
-            简介
-        th
-            数量
-        th
-            加入购物车
-    tr
-        th
-            = dish.name
-        th
-            = dish.price
-        th
-            = dish.intro
-        th
-            input(type="text", name="quantity", value=1);
-            input(type="hidden", name="id", value="#{dish.id}")
-        th
-            input(type="submit", name="submit", value="加入购物车")
+
+script(type="text/javascript", src="/js/customer/deal_add.js")
+div#tmp
+    form(id="dish_info", name="dish_info", method="post")
+    div
+        h4#info
+    table
+        tr
+            th
+                菜品名
+            th
+                价格
+            th
+                简介
+            th
+                数量
+            th
+                加入购物车
+        tr
+            th
+                = dish.name
+            th
+                = dish.price
+            th
+                = dish.intro
+            th
+                input(id="quantity", type="text", name="quantity", value=1);
+                input(id="id", type="hidden", name="id", value="#{dish.id}")
+            th
+                input(type="button", name="add_deal", value="加入购物车", onclick="deal_add();")

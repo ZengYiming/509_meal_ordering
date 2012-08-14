@@ -13,4 +13,9 @@ html
         table#headtable
             tr#headline
 
+        - if (typeof(error) !== 'undefined') {
+                    != error
+                - }
+
+        br
         !=body

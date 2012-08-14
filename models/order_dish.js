@@ -16,5 +16,17 @@ function createOrder_dish() {
 function Order_dish() {
 };
 
+Order_dish.prototype = new SimpleDO('`order_dish`');
+
+Order_dish.prototype.create = function(body, cb) {
+    var opt = {
+        table: 'order_dish',
+        fields: body
+    };
+    mysql.insert(opt, function(err, info) {
+        if(err) return cb(err);
+        return cb(err, info);
+    });
+}
 
 exports = module.exports = createOrder_dish;

@@ -1,0 +1,35 @@
+div
+    -if(typeof(gross) != 'undefined')
+        h3 订单总金额:#{gross}
+div
+    所订菜品：
+    table
+        tr
+            th
+                菜品名
+            th
+                份数
+        -if(typeof(deals) != 'undefined')
+          - each deal in deals
+            tr
+                th
+                    = deal.dish.name
+                th
+                    = deal.quantity
+div
+    - var this_name = '', this_tel = '', this_addr = '';
+    -if(typeof(rec_name) !== 'undefined') {
+     -   this_name = rec_name
+    -}
+    -if(typeof(rec_tel) !== 'undefined') {
+    -   this_tel = rec_tel
+    -}
+    -if(typeof(rec_addr) !== 'undefined') {
+    -   this_addr = rec_addr
+    -}
+    h3 请完善订单信息
+    form(id="order_add", name="order_add", method="post", action="/customer/order_add")
+        input(type="text", id="rec_name", name="rec_name", placeholder="收件人姓名", value="#{this_name}")
+        input(type="text", id="rec_tel", name="rec_tel", placeholder="收件人电话", value="#{this_tel}")
+        input(type="text", id="rec_addr", name="rec_addr", placeholder="送餐地址", value="#{this_addr}")
+        input(type="submit", name="submit", id="submit", value="提交订单")

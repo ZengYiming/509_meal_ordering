@@ -1,0 +1,32 @@
+
+
+div
+    h3 总金额:#{gross}
+table
+    tr
+        th
+            菜品名
+        th
+            单价
+        th
+            数量
+        th
+            金额
+        th
+            删除
+    if(typeof(deals) != 'undefined')
+      - each deal in deals
+        tr
+            th
+                = deal.dish.name
+            th
+                = deal.dish.price
+            th
+                = deal.quantity
+            th
+                = deal.sum
+            th
+                a(href="http://localhost:8888/customer/shopping_cart_del?id=#{deal.dish.id}") 删除
+
+a(href="http://localhost:8888/customer/shopping_cart_clear") 清空购物车
+a(href="http://localhost:8888/customer/order_add") 确认购买

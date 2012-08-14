@@ -16,5 +16,18 @@ function createOrders() {
 function Orders() {
 };
 
+Orders.prototype = new SimpleDO('`orders`');
+
+Orders.prototype.create = function(body, cb) {
+    var opt = {
+        table: 'orders',
+        fields: body
+    };
+    mysql.insert(opt, function(err, info) {
+        if(err) return cb(err);
+        return cb(err, info);
+    });
+};
+
 
 exports = module.exports = createOrders;

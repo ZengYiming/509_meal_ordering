@@ -8,6 +8,6 @@
 exports.User = require("./user")();
 exports.Member = require("./member")();
 exports.Dish = require("./dish")();
-exports.Orders = require("./orders")();
+exports.Order = require("./order")();
 exports.Order_dish = require("./order_dish")();
 exports.Restaurant = require("./restaurant")();
