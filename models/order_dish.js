@@ -27,6 +27,18 @@ Order_dish.prototype.create = function(body, cb) {
         if(err) return cb(err);
         return cb(err, info);
     });
+};
+
+Order_dish.prototype.findAll = function(opt, cb) {
+    var sql = " SELECT * FROM order_dish  "
+        +" where 1=1 "+ opt.where;
+    if(opt.sidx && opt.sord) sql += " ORDER BY "+opt.sidx+" "+opt.sord;
+    if(opt.limit) sql += " LIMIT "+ opt.start + " , "+opt.limit;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+        cb(err, rs);
+    });
 }
 
 exports = module.exports = createOrder_dish;

@@ -1,0 +1,33 @@
+
+
+table
+    tr
+        th
+            订单号
+        th
+            订单状态
+        th
+            提交日期
+        th
+            删除
+    - if(typeof(orders) != 'undefined')
+      - each order in orders
+        tr
+            th
+                a(href="http://localhost:8888/customer/order_info?order_id=#{order.id}") #{order.id}
+            th
+                - if(order.status == 0)
+                    h5 无法完成
+                - else if(order.status == 1)
+                    h5 订单已提交
+                - else if(order.status == 2)
+                    h5 制作中
+                - else if(order.status == 3)
+                    h5 派送中
+                - else if(order.status == 4)
+                    h5 交易完成
+            th
+                = order.submit_time
+            th
+                - if(order.status == 1)
+                    a(href="http://localhost:8888/customer/order_del?order_id=#{order.id}") 删除

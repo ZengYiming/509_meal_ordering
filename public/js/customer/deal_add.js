@@ -22,9 +22,9 @@ function deal_add() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
             document.getElementById('info').innerHTML = xmlhttp.responseText;
         }
-        else {
+       /* else {
             document.getElementById('tmp').innerHTML = '无权限进行此操作';
-        }
+        }*/
     }
 
     var quantity = document.getElementById('quantity').value;

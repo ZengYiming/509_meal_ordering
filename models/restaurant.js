@@ -28,6 +28,25 @@ Restaurant.prototype.findAll = function(opt, cb) {
         if(!rs.length) return cb(err);
         cb(err, rs);
     });
-}
+};
+
+Restaurant.prototype.findOne = function(opt, cb) {
+    where = "";
+    for(var k in opt) {
+        var value = opt[k];
+        if(typeof value != 'object' && typeof value != 'array') {
+            where += " AND " + k + " = '" + value + "'";
+        }
+    }
+
+    //var sql = "SELECT * FROM `user` WHERE `cellphone` LIKE '"+opt.loginname+"'";
+    var sql = "SELECT * FROM `restaurant` WHERE 1=1 "+where;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+//        console.log("rs: " + sys.inspect(rs[0]));
+        cb(err, rs[0]);
+    });
+};
 
 exports = module.exports = createRestaurant;

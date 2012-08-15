@@ -36,7 +36,6 @@ function auth_role(req, res, next, role) {
                 return;
             }
         }
-
         res.render('index', {error: '无权限进行此操作'});
 
     }
@@ -82,6 +81,9 @@ exprots = module.exports = function(app) {
     app.get('/customer/shopping_cart', authToCustomer, shopping_cart.show);
     app.get('/customer/shopping_cart_clear', authToCustomer, shopping_cart.clear);
     app.all('/customer/order_add', authToCustomer, order.add);
+    app.get('/customer/order_list', authToCustomer, order.show_list);
+    app.get('/customer/order_info', authToCustomer, order.show_info);
+    app.get('/customer/order_del', authToCustomer, order.del);
 
     //adm
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);

@@ -19,7 +19,7 @@ exports.add = function(req, res, next) {
         create_cart(req);
         req.session.shopping_gross += sum;
         merge(req, deal);
-        console.log("after add, shopping_cart: " + sys.inspect(req.session.shopping_cart));
+//        console.log("after add, shopping_cart: " + sys.inspect(req.session.shopping_cart));
         res.write('添加购物车成功');
         res.end();
     });
@@ -34,7 +34,7 @@ exports.del = function(req, res, next) {
             req.session.shopping_cart.splice(k, 1);
         }
     }
-    console.log("after delete, shopping_cart: " + sys.inspect(req.session.shopping_cart));
+//    console.log("after delete, shopping_cart: " + sys.inspect(req.session.shopping_cart));
     exports.show(req, res, next, '购物车修改成功');
 };
 

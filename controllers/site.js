@@ -48,7 +48,7 @@ exports.headLine = function (req, res, next) {
             if(user.member[k].role == 1) {
                 headline += '<th>积分：' + user.member[k].credits + '</th>';
                 headline += '<th><a href="http://localhost:8888/customer/shopping_cart">我的购物车</a></th>';
-                headline += '<th><a href="http://localhost:8888/customer/orders">我的订单</a></th>';
+                headline += '<th><a href="http://localhost:8888/customer/order_list">我的订单</a></th>';
             }
             else if(user.member[k].role == 0) {
                 headline += '<th><a href="#">后台管理</a></th>';

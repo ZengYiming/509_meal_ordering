@@ -30,6 +30,9 @@ div
     h3 请完善订单信息
     form(id="order_add", name="order_add", method="post", action="/customer/order_add")
         input(type="text", id="rec_name", name="rec_name", placeholder="收件人姓名", value="#{this_name}")
+        br
         input(type="text", id="rec_tel", name="rec_tel", placeholder="收件人电话", value="#{this_tel}")
+        br
         input(type="text", id="rec_addr", name="rec_addr", placeholder="送餐地址", value="#{this_addr}")
+        br
         input(type="submit", name="submit", id="submit", value="提交订单")
