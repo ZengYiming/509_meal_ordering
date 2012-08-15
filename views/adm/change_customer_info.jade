@@ -1,5 +1,5 @@
 script(type='text/javascript', src='/js/adm/change_customer_info.js')
-form(id='change_customer_info_success', method='post', action='/adm/change_customer_info_success')
+form
 
     - if (typeof(error) !== 'undefined') {
         = error
@@ -14,7 +14,8 @@ form(id='change_customer_info_success', method='post', action='/adm/change_custo
                             tr
                                 td(width='100%', align='left', valign='baseline', colspan=4)
                                     #page_operate(style='visibility:none;')
-                                        input#edit_btn.btn(type='button', value='修改用户信息')
-                                        input#del_btn.btn(type='button', value='删除用户')
+                                        input#edit_btn.btn(type='button', value='修改选中行')
+                                        input#del_btn.btn(type='button', value='删除选中行')
+    #popDialog
     table#change_customer_info_table
     #change_customer_info_pager

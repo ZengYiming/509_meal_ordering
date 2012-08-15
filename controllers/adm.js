@@ -25,11 +25,8 @@ exports.adm_control_panel = function(req, res, next){
     res.render('adm/adm_control_panel',{title: '系统管理员控制面板'});
 };
 exports.change_customer_info = function(req, res, next){
-    res.render('adm/change_customer_info',{title:'用户信息'});
+    res.render('adm/change_customer_info',{title:'用户信息管理'});
 
-};
-exports.change_customer_info_success = function(req, res, next){
-    res.send('更改用户信息成功！');
 };
 
 exports.findallusers = function(req, res, next){
@@ -140,12 +137,25 @@ exports.findallusers = function(req, res, next){
 
 };
 
-exports.change_restaurant_info = function(req, res, next){
-    res.render('adm/change_restaurant_info',{title:'店铺信息'});
-
+exports.pageEdit = function(req, res, next) {
+    console.log("开始 pageEdit 。。。");
+    var _id = req.params._id;
+    // 本页面有3个状态： 新增， 查看， 编辑
+    // - 新增(pageState=0)： 所有输入框为空，显示：保存按钮
+    // - 查看(pageState=1)： 输入框有数据，显示：关闭按钮
+    // - 编辑(pageState=2)： 输入框有数据，显示：保存按钮 + 关闭按钮
+    var pageState = 2;
+    try {
+        check(_id, "流水号不能为空！").notNull();
+        res.render('adm/edit_customer_info', { layout: false, _id:_id, pageState:pageState});
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
 };
-exports.change_restaurant_info_success = function(req, res, next){
-    res.send('更改用户信息成功！');
+
+exports.change_restaurant_info = function(req, res, next){
+    res.render('adm/change_restaurant_info',{title:'店铺信息管理'});
+
 };
 
 exports.findallrestaurants = function(req, res, next){

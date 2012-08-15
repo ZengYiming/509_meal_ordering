@@ -49,28 +49,28 @@ $(function(){
         height: 300,
         prmNames : {
             rows:"limit" // 表示请求行数的参数名称
+        },
+        loadComplete:function(data){ //完成服务器请求后，回调函数
+            console.log(data);
+            if(data.records == undefined  || data.records == 0){ //如果没有记录返回，追加提示信息，删除按钮不可用
+                $("p").appendTo($("#change_customer_info_table")).addClass("nodata").html('找不到相关数据！');
+                $("#del_btn").attr("disabled",true);
+            }else{ //否则，删除提示，删除按钮可用
+                $("p.nodata").remove();
+                $("#del_btn").removeAttr("disabled");
+            }
+        },
+        loadError:function(xhr,status,error){
+            $("p").appendTo($("#change_customer_info_table")).addClass("nodata").html('找不到相关数据！');
+            $("#del_btn").attr("disabled",true);
         }
-//        loadComplete:function(data){ //完成服务器请求后，回调函数
-//            console.log(data);
-//            if(data.records == undefined  || data.records == 0){ //如果没有记录返回，追加提示信息，删除按钮不可用
-//                $("p").appendTo($("#list")).addClass("nodata").html('找不到相关数据！');
-//                $("#del_btn").attr("disabled",true);
-//            }else{ //否则，删除提示，删除按钮可用
-//                $("p.nodata").remove();
-//                $("#del_btn").removeAttr("disabled");
-//            }
-//        },
-//        loadError:function(xhr,status,error){
-//            $("p").appendTo($("#list")).addClass("nodata").html('找不到相关数据！');
-//            $("#del_btn").attr("disabled",true);
-//        }
     });
-//    $("#popDialog").dialog({
-//        autoOpen: false,
-//        modal: true,
-//        height: 800,
-//        width: 600
-//    });
+    $("#popDialog").dialog({
+        autoOpen: false,
+        modal: true,
+        height: 800,
+        width: 600
+    });
 //
 //    $("#show_type").click(function(){
 ////        $.fancybox({
@@ -178,49 +178,33 @@ $(function(){
 //            }
 //        }
 //    });
-//    $("#edit_btn").click(function(){
-//        var sels = $("#list").jqGrid('getGridParam','selarrrow');
-//        if(sels==""){
-//            $().message("请选择要编辑的项！");
-//        }else{
-//            if(sels.toString().indexOf(',') > 0){
-//                $().message("只可选择一项进行编辑！");
-//            }else{
-////                $.fancybox({
-////                    'title':'修改商品',
-////                    'autoDimensions':false,
-////                    'type':'ajax',
-////                    'href':'/goods/edit/'+sels,
-////                    'width': 500,
-////                    'height': 600,
-////                    'modal':true,
-////                    'titleShow':true,
-////                    'titlePosition':'over',
-////                    'cyclic': true,
-////                    'showCloseButton':true,
-////                    'showNavArrows':false,
-////                    'transitionIn': 'elastic',//（效果出入）属性值有三个：fade,elastic,none,含义分别为淡入淡出、弹性缩放、无，默认值为fade。
-////                    'transitionOut': 'elastic',
-////                    'centerOnScroll':false,
-////                    'onComplete': function() {$("#fancybox-title").css({'top':'0px', 'bottom':'auto'});}
-////                });
-//                $("#popDialog").dialog({
-//                    open: function(event, ui) {
-//                        $(this).load('/goods/edit/'+sels);
-//                    },
-//                    title: '修改商品'
-//                });
-//                $("#popDialog").dialog("open");
-//                return false;
-//            }
-//        }
-//    });
-//    $("#del_btn").click(function(){
-//        var sels = $("#list").jqGrid('getGridParam','selarrrow');
-//        if(sels==""){
-//            $().message("请选择要删除的项！");
-//        }else{
-//            if(confirm("您是否确认删除？")){
+    $("#edit_btn").click(function(){
+        var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        if(sels==""){
+            $().message("请选择要修改的项！");
+        }else{
+            if(sels.toString().indexOf(',') > 0){
+                $().message("只可选择一项进行修改！");
+            }else{
+                //$().message("修改信息成功！");
+                $("#popDialog").dialog({
+                    open: function(event, ui) {
+                        $(this).load('/adm/change_customer_info/edit/'+sels);
+                    },
+                    title: '修改用户信息'
+                });
+                $("#popDialog").dialog("open");
+                return false;
+            }
+        }
+    });
+    $("#del_btn").click(function(){
+        var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        if(sels==""){
+            $().message("请选择要删除的项！");
+        }else{
+            if(confirm("您是否确认删除？")){
+                $().message("删除成功！");
 //                $.ajax({
 //                    type: "delete",
 //                    url: "/goods/"+sels,
@@ -236,7 +220,7 @@ $(function(){
 //                            var arr = msg._ids.split(',');
 //                            $.each(arr,function(i,n){
 //                                if(arr[i]!=""){
-//                                    $("#list").jqGrid('delRowData',n);
+//                                    $("#change_customer_info_table").jqGrid('delRowData',n);
 //                                }
 //                            });
 //                            $().message("已成功删除!");
@@ -245,9 +229,9 @@ $(function(){
 //                        }
 //                    }
 //                });
-//            }
-//        }
-//    });
+            }
+        }
+    });
 //    $("#find_btn").click(function(){
 //        var obj = new Object();
 //        $(".query_input").each(function(){
