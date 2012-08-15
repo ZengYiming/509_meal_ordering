@@ -11,6 +11,8 @@
 var site = require("./controllers/site");
 var sign = require("./controllers/sign");
 var customer = require("./controllers/customer");
+var user= require("./controllers/user");
+var adm = require("./controllers/adm");
 
 function auth(req, res, next) {
     if(req.session.user) {
@@ -75,10 +77,10 @@ exprots = module.exports = function(app) {
     // customer
     app.all('/customer/change_info', authToCustomer, customer.change_info);
     //adm
-    app.get('/adm/adm_control_panel', authToAdm,adm.adm_control_panel);
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
     app.get('/adm/change_customer_info/findall',authToAdm,adm.findallusers);
     app.get('/adm/change_customer_info/edit/:_id',authToAdm,adm.pageEdit);
+    app.post('/adm/edit_customer_info/update',authToAdm,adm.updateUser);
 
     app.get('/adm/change_restaurant_info',authToAdm,adm.change_restaurant_info);
     app.get('/adm/change_restaurant_info/findall',authToAdm,adm.findallrestaurants);

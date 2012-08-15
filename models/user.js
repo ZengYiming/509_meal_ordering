@@ -5,7 +5,7 @@
  * Time: 下午4:53
  * To change this template use File | Settings | File Templates.
  */
-var sys = require("sys");
+//var sys = require("sys");
 
 var mysql = require('../dao/mysql.js');
 
