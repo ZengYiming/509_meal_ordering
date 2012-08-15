@@ -211,13 +211,14 @@ exports.login = function(req, res, next) {
     });
     ep.on('member', function() {
 //        findRole(member.role_id);
-        /*var user = req.session.user;
+        var user = req.session.user;
         for(var k in user.member) {
             if(user.member[k].role == 0) {
                 //跳转到admin页面
+                res.render('adm/adm_control_panel',{title: '系统管理员控制面板'});
                 return;
             }
-        }*/
+        }
         feedback({status:200, error:'登陆成功'});
     });
 /*    ep.on('role', function() {

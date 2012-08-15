@@ -1,0 +1,21 @@
+script(type='text/javascript', src='/js/adm/change_restaurant_info.js')
+form
+
+    - if (typeof(error) !== 'undefined') {
+        = error
+    - }
+    h1 店铺管理
+    table(border='0', width='100%')
+            tr
+                td
+                    form
+                        table(border='0', width='100%')
+                            ////////////////////////增删改区域Start
+                            tr
+                                td(width='100%', align='left', valign='baseline', colspan=4)
+                                    #page_operate(style='visibility:none;')
+                                    input#add_btn.btn(type='button', value='新增店铺')
+                                    input#edit_btn.btn(type='button', value='修改店铺信息')
+                                    input#del_btn.btn(type='button', value='删除店铺')
+    table#change_restaurant_info_table
+    #change_restaurant_info_pager
