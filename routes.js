@@ -6,15 +6,11 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var sys = require("sys");
+//var sys = require("sys");
 
 var site = require("./controllers/site");
 var sign = require("./controllers/sign");
 var customer = require("./controllers/customer");
-var user = require("./controllers/user");
-var shopping_cart = require("./controllers/shopping_cart");
-var adm = require("./controllers/adm");
-var order = require("./controllers/order");
 
 function auth(req, res, next) {
     if(req.session.user) {
@@ -77,13 +73,14 @@ exprots = module.exports = function(app) {
     app.all('/user/change_psw', auth, user.change_psw);
 
     // customer
-    app.post('/customer/shopping_cart_add', authToCustomer, shopping_cart.add);
-    app.get('/customer/shopping_cart_del', authToCustomer, shopping_cart.del);
-    app.get('/customer/shopping_cart', authToCustomer, shopping_cart.show);
-    app.get('/customer/shopping_cart_clear', authToCustomer, shopping_cart.clear);
-    app.all('/customer/order_add', authToCustomer, order.add);
-
+    app.all('/customer/change_info', authToCustomer, customer.change_info);
     //adm
+    app.get('/adm/adm_control_panel', authToAdm,adm.adm_control_panel);
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
-    app.post('/adm/change_customer_info_success',authToAdm,adm.change_customer_info_success);
+    app.get('/adm/change_customer_info/findall',authToAdm,adm.findallusers);
+    app.get('/adm/change_customer_info/edit/:_id',authToAdm,adm.pageEdit);
+
+    app.get('/adm/change_restaurant_info',authToAdm,adm.change_restaurant_info);
+    app.get('/adm/change_restaurant_info/findall',authToAdm,adm.findallrestaurants);
+
 };
