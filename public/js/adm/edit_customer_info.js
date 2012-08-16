@@ -37,7 +37,7 @@ $(function(){
             async: false,
             data: user_json,
             success: function (data, textStatus) {
-                $().message("添加成功！");
+                $().message("修改成功！");
                 $("#popDialog").dialog("close");
                 $("#change_customer_info_table").trigger("reloadGrid", [{current:true}]);
             },

@@ -137,8 +137,8 @@ exports.findallusers = function(req, res, next){
 };
 
 exports.pageEdit = function(req, res, next) {
-    var _id = req.params._id;
-    console.log("开始 pageEdit 。。。id="+_id);
+    var id = req.params.id;
+    console.log("开始 pageEdit 。。。id="+id);
     // 本页面有3个状态： 新增， 查看， 编辑
     // - 新增(pageState=0)： 所有输入框为空，显示：保存按钮
     // - 查看(pageState=1)： 输入框有数据，显示：关闭按钮
@@ -148,8 +148,8 @@ exports.pageEdit = function(req, res, next) {
         var user = req.session.user;
         var img = user.image || 'default_avatar.gif';
         var avatar_src = '/image/avatar/' + img;
-        check(_id, "流水号不能为空！").notNull();
-        res.render('adm/edit_customer_info', { layout: false, _id:_id, avatar_src: avatar_src});
+        check(id, "流水号不能为空！").notNull();
+        res.render('adm/edit_customer_info', { layout: false, id:id, avatar_src: avatar_src});
     }catch(e){
         res.json({status:400, error:e.message}, 400);
     }
@@ -184,7 +184,24 @@ exports.updateUser = function(req, res, next) {
     }catch(e){
         res.json({status:400, error:e.message}, 400);
     }
-}
+};
+
+exports.deleteUser = function(req, res, next) {
+
+    var ids = req.params.ids;
+    console.log("开始进行删除。。。。ids="+ids);
+
+    try {
+        check(ids, "删除失败，编号不能为空！").notNull();
+
+        User.delete(ids, function(err,ds){
+            if(err) return next(err);
+            return res.json({"status":200, "error":'删除商品信息成功!'}, 200);
+            });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
 
 exports.change_restaurant_info = function(req, res, next){
     res.render('adm/change_restaurant_info',{title:'店铺信息管理'});

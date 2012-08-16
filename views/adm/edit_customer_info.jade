@@ -4,7 +4,7 @@ script(type='text/javascript', src='/js/adm/edit_customer_info.js')
         fieldset#goodsContent
             legend(style='color: #C00; font-style: normal;') 用户信息
             div
-                label  编号：#{locals._id?_id:''}
+                label  编号：#{locals.id?id:''}
             div
                 label.error   用户名：
                 input#username.allowInput(type='text', name='username')
