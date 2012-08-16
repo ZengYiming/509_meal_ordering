@@ -14,7 +14,7 @@ var models = require('../models');
 var Restaurant = models.Restaurant;
 var Dish = models.Dish;
 
-//var url = require('url');
+var url = require('url');
 
 exports.index = function(req, res, next){
     Dish.findAll({where:''}, function(err, result) {
@@ -40,27 +40,27 @@ exports.dish_info = function(req, res, next) {
 };
 
 exports.headLine = function (req, res, next) {
-    var headline = '<th><a href="http://localhost:8888/">首页</a></th>';
+    var headline = '<li id="home_page"><a href="http://localhost:8888/">首页</a></li>';
     if(req.session.user) {
         var user = req.session.user;
-        headline += '<th><a href="http://localhost:8888/user/index">' + user.name + '</a></th>';
+        headline += '<li id="user_info"><a href="http://localhost:8888/user/index">' + user.name + '</a></li>';
         for(var k in user.member) {
             if(user.member[k].role == 1) {
-                headline += '<th>积分：' + user.member[k].credits + '</th>';
-                headline += '<th><a href="http://localhost:8888/customer/shopping_cart">我的购物车</a></th>';
-                headline += '<th><a href="http://localhost:8888/customer/order_list">我的订单</a></th>';
+                headline += '<li id="credit">积分：' + user.member[k].credits + '</li>';
+                headline += '<li id="shopping_cart"><a href="http://localhost:8888/customer/shopping_cart">我的购物车</a></li>';
+                headline += '<li id="orders"><a href="http://localhost:8888/customer/order_list">我的订单</a></li>';
             }
             else if(user.member[k].role == 0) {
-                headline += '<th><a href="http://localhost:8888/adm/change_customer_info">用户信息管理</a></th>';
-                headline += '<th><a href="http://localhost:8888/adm/change_restaurant_info">店铺信息管理</a></th>';
+                headline += '<li><a href="http://localhost:8888/adm/change_customer_info">用户信息管理</a></li>';
+                headline += '<li><a href="http://localhost:8888/adm/change_restaurant_info">店铺信息管理</a></li>';
             }
             else if(user.member[k].role == 2) {
-                headline += '<th><a href="#">餐馆管理</a></th>';
+                headline += '<li><a href="#">餐馆管理</a></li>';
             }
         }
-        headline += '<th><a href="http://localhost:8888/signout">退出</a></th>';
+        headline += '<li><a href="http://localhost:8888/signout">退出</a></li>';
     }else {
-        headline += '<th><a href="http://localhost:8888/signin/">登录</a></th>' + '<th><a href="http://localhost:8888/signup/">注册</a></th>';
+        headline += '<li><a href="http://localhost:8888/signin/">登录</a></li>' + '<li><a href="http://localhost:8888/signup/">注册</a></li>';
     }
 
     res.write(headline);
