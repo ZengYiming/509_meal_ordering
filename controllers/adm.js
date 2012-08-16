@@ -21,7 +21,9 @@ var check = require('validator').check;
 var sanitize = require('validator').sanitize;
 var config = require('../config').config;
 var formidable = require('formidable');
-
+var fs = require('fs');
+var path = require('path');
+var sys = require('sys');
 
 exports.change_customer_info = function(req, res, next){
     res.render('adm/change_customer_info',{title:'用户信息管理'});
@@ -136,7 +138,7 @@ exports.findallusers = function(req, res, next){
 
 };
 
-exports.pageEdit = function(req, res, next) {
+exports.userpageEdit = function(req, res, next) {
     var id = req.params.id;
     console.log("开始 pageEdit 。。。id="+id);
     // 本页面有3个状态： 新增， 查看， 编辑
@@ -157,7 +159,8 @@ exports.pageEdit = function(req, res, next) {
 
 exports.updateUser = function(req, res, next) {
     console.log("updateUser。。。");
-
+    var user = req.session.user;
+    var form = new formidable.IncomingForm();
     //开始校验输入数值的正确性
     var id = req.body.id;
     var username = req.body.username;
@@ -166,13 +169,14 @@ exports.updateUser = function(req, res, next) {
     var tel = req.body.tel;
     var email = req.body.email;
     var image = req.body.image;
+    console.log(image);
     try {
-        check(id, "更新失败，编号不能为空！").notNull();
+        check(id, "保存失败，编号不能为空！").notNull();
         check(username, "保存失败，用户名不能为空！").notNull();
         check(password, "保存失败，密码不能为空！").notNull();
         check(name, "保存失败，姓名不能为空！").notNull();
         check(tel, "保存失败，电话不能为空！").notNull();
-        check(email, "保存失败，电子邮件不能为空！").notNull();
+        check(email, "保存失败，电子邮件不正确！").isEmail();
         //说明是更新数据
         User.update({id:id, username:username, password:password, name:name, tel:tel, email:email, image:image}, function(err,info){
             if(err) return next(err);
@@ -188,13 +192,13 @@ exports.updateUser = function(req, res, next) {
 
 exports.deleteUser = function(req, res, next) {
 
-    var ids = req.params.ids;
-    console.log("开始进行删除。。。。ids="+ids);
+    var id = req.params.id;
+    console.log("开始进行删除。。。。id="+id);
 
     try {
-        check(ids, "删除失败，编号不能为空！").notNull();
+        check(id, "删除失败，编号不能为空！").notNull();
 
-        User.delete(ids, function(err,ds){
+        User.delete(id, function(err,ds){
             if(err) return next(err);
             return res.json({"status":200, "error":'删除商品信息成功!'}, 200);
             });

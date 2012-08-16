@@ -14,7 +14,7 @@ var models = require('../models');
 var Restaurant = models.Restaurant;
 var Dish = models.Dish;
 
-//var url = require('url');
+var url = require('url');
 
 exports.index = function(req, res, next){
     Dish.findAll({where:''}, function(err, result) {

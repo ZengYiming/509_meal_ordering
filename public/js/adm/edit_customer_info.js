@@ -5,7 +5,6 @@
  * Time: 下午3:36
  * To change this template use File | Settings | File Templates.
  */
-
 $(function(){
     var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
     var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
@@ -23,9 +22,9 @@ $(function(){
         var name = $("#name").val();
         var tel = $("#tel").val();
         var email = $("#email").val();
-        var image = $("#image").val();
+        var image = $("#upload").val();
 
-        var user_json = {id:id,username:username, password:password, name:name, tel:tel, email:email,image:image};
+        var user_json = {id:id,username:username, password:password, name:name, tel:tel, email:email, image:image};
 
         console.log("user_json:"+JSON.stringify(user_json));
 
@@ -37,13 +36,13 @@ $(function(){
             async: false,
             data: user_json,
             success: function (data, textStatus) {
-                $().message("修改成功！");
+                alert("修改成功！");
                 $("#popDialog").dialog("close");
                 $("#change_customer_info_table").trigger("reloadGrid", [{current:true}]);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 var res = JSON.parse(XMLHttpRequest.responseText);
-                $().message(res.error);//有错
+                alert(res.error);//有错
             }
         });
     });
