@@ -20,10 +20,9 @@ var EventProxy = require('eventproxy').EventProxy;
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
 var config = require('../config').config;
+var formidable = require('formidable');
 
-exports.adm_control_panel = function(req, res, next){
-    res.render('adm/adm_control_panel',{title: '系统管理员控制面板'});
-};
+
 exports.change_customer_info = function(req, res, next){
     res.render('adm/change_customer_info',{title:'用户信息管理'});
 
@@ -138,16 +137,67 @@ exports.findallusers = function(req, res, next){
 };
 
 exports.pageEdit = function(req, res, next) {
-    console.log("开始 pageEdit 。。。");
-    var _id = req.params._id;
+    var id = req.params.id;
+    console.log("开始 pageEdit 。。。id="+id);
     // 本页面有3个状态： 新增， 查看， 编辑
     // - 新增(pageState=0)： 所有输入框为空，显示：保存按钮
     // - 查看(pageState=1)： 输入框有数据，显示：关闭按钮
     // - 编辑(pageState=2)： 输入框有数据，显示：保存按钮 + 关闭按钮
     var pageState = 2;
     try {
-        check(_id, "流水号不能为空！").notNull();
-        res.render('adm/edit_customer_info', { layout: false, _id:_id, pageState:pageState});
+        var user = req.session.user;
+        var img = user.image || 'default_avatar.gif';
+        var avatar_src = '/image/avatar/' + img;
+        check(id, "流水号不能为空！").notNull();
+        res.render('adm/edit_customer_info', { layout: false, id:id, avatar_src: avatar_src});
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+
+exports.updateUser = function(req, res, next) {
+    console.log("updateUser。。。");
+
+    //开始校验输入数值的正确性
+    var id = req.body.id;
+    var username = req.body.username;
+    var password = req.body.password;
+    var name = req.body.name;
+    var tel = req.body.tel;
+    var email = req.body.email;
+    var image = req.body.image;
+    try {
+        check(id, "更新失败，编号不能为空！").notNull();
+        check(username, "保存失败，用户名不能为空！").notNull();
+        check(password, "保存失败，密码不能为空！").notNull();
+        check(name, "保存失败，姓名不能为空！").notNull();
+        check(tel, "保存失败，电话不能为空！").notNull();
+        check(email, "保存失败，电子邮件不能为空！").notNull();
+        //说明是更新数据
+        User.update({id:id, username:username, password:password, name:name, tel:tel, email:email, image:image}, function(err,info){
+            if(err) return next(err);
+
+            //res.json({status:200, error:'更新商品信息成功!'}, 200);
+            var jsonObj = {user:{id:info.insertId}};
+            return res.json(jsonObj, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+
+exports.deleteUser = function(req, res, next) {
+
+    var ids = req.params.ids;
+    console.log("开始进行删除。。。。ids="+ids);
+
+    try {
+        check(ids, "删除失败，编号不能为空！").notNull();
+
+        User.delete(ids, function(err,ds){
+            if(err) return next(err);
+            return res.json({"status":200, "error":'删除商品信息成功!'}, 200);
+            });
     }catch(e){
         res.json({status:400, error:e.message}, 400);
     }

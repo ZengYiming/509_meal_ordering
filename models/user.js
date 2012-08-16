@@ -5,7 +5,7 @@
  * Time: 下午4:53
  * To change this template use File | Settings | File Templates.
  */
-var sys = require("sys");
+//var sys = require("sys");
 
 var mysql = require('../dao/mysql.js');
 
@@ -99,7 +99,7 @@ User.prototype.create = function(body, cb) {
  * @param cb 回调
  */
 User.prototype.delete = function(ids, cb) {
-    var sql = " delete from user where _id in(" + ids + ") ";
+    var sql = " delete from user where id in(" + ids + ") ";
     mysql.query(sql, function(err, rs) {
         if(err) return cb(err);
         cb(err, rs);

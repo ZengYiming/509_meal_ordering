@@ -86,10 +86,11 @@ exprots = module.exports = function(app) {
     app.get('/customer/order_del', authToCustomer, order.del);
 
     //adm
-    app.get('/adm/adm_control_panel', authToAdm,adm.adm_control_panel);
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
     app.get('/adm/change_customer_info/findall',authToAdm,adm.findallusers);
-    app.get('/adm/change_customer_info/edit/:_id',authToAdm,adm.pageEdit);
+    app.get('/adm/change_customer_info/edit/:id',authToAdm,adm.pageEdit);
+    app.post('/adm/edit_customer_info/update',authToAdm,adm.updateUser);
+    app.delete('/adm/change_customer_info/delete/:ids',authToAdm,adm.deleteUser);
 
     app.get('/adm/change_restaurant_info',authToAdm,adm.change_restaurant_info);
     app.get('/adm/change_restaurant_info/findall',authToAdm,adm.findallrestaurants);

@@ -68,118 +68,14 @@ $(function(){
     $("#popDialog").dialog({
         autoOpen: false,
         modal: true,
-        height: 800,
+        height: 600,
         width: 600
     });
-//
-//    $("#show_type").click(function(){
-////        $.fancybox({
-////            'title':'商品类型管理',
-////            'autoDimensions':false,
-////            'type':'ajax',
-////            'href':'/goods/type',
-////            'width': 500,
-////            'height': 600,
-////            'modal':true,
-////            'titleShow':true,
-////            'titlePosition':'over',
-////            'showCloseButton':true,
-////            'showNavArrows':false,
-////            'transitionIn': 'elastic',//（效果出入）属性值有三个：fade,elastic,none,含义分别为淡入淡出、弹性缩放、无，默认值为fade。
-////            'transitionOut': 'elastic',
-////            'centerOnScroll':false,
-////            'onComplete': function() {$("#fancybox-title").css({'top':'0px', 'bottom':'auto'});}
-////        });
-//        $("#popDialog").dialog({
-//            open: function(event, ui) {
-//                $(this).load('/goods/type');
-//            },
-//            title: '商品类型管理'
-//        });
-//        $("#popDialog").dialog("open");
-//        return false;
-//    });
-////    $("#popDialog").dialog({
-////        autoOpen: false,
-////        modal: true,
-////        open: function ()
-////        {
-////            $(this).load('/goods/new');
-////        },
-////        height: 600,
-////        width: 550,
-////        title: '新增商品'
-////    });
-//
-//    $("#add_btn").click(function(){
-//        $("#popDialog").dialog({
-//            open: function(event, ui) {
-//                $(this).load('/goods/new');
-//            },
-//            title: '添加新员工'
-//        });
-//        $("#popDialog").dialog("open");
-//        return false;
-//    });
-////    $("#add_btn111").click(function(){
-////        $.fancybox({
-////            'title':'新增商品',
-////            'autoDimensions':false,
-////            'type':'ajax',
-////            'href':'/goods/new',
-////            'width': 500,
-////            'height': 600,
-////            'modal':true,
-////            'titleShow':true,
-////            'titlePosition':'over',
-////            'showCloseButton':true,
-////            'showNavArrows':false,
-////            'transitionIn': 'elastic',//（效果出入）属性值有三个：fade,elastic,none,含义分别为淡入淡出、弹性缩放、无，默认值为fade。
-////            'transitionOut': 'elastic',
-////            'centerOnScroll':false,
-////            'onComplete': function() {$("#fancybox-title").css({'top':'0px', 'bottom':'auto'});}
-////        });
-////    });
-//    $("#view_btn").click(function(){
-//        var sels = $("#list").jqGrid('getGridParam','selarrrow');
-//        if(sels==""){
-//            $().message("请选择要查看的项！");
-//        }else{
-//            if(sels.toString().indexOf(',') > 0){
-//                $().message("只可选择一项进行查看！");
-//            }else{
-////                $.fancybox({
-////                    'title':'查看商品',
-////                    'autoDimensions':false,
-////                    'type':'ajax',
-////                    'href':'/goods/view/'+sels,
-////                    'width': 500,
-////                    'height': 600,
-////                    'modal':true,
-////                    'titleShow':true,
-////                    'titlePosition':'over',
-////                    'cyclic': true,
-////                    'showCloseButton':true,
-////                    'showNavArrows':false,
-////                    'transitionIn': 'elastic',//（效果出入）属性值有三个：fade,elastic,none,含义分别为淡入淡出、弹性缩放、无，默认值为fade。
-////                    'transitionOut': 'elastic',
-////                    'centerOnScroll':false,
-////                    'onComplete': function() {$("#fancybox-title").css({'top':'0px', 'bottom':'auto'});}
-////                });
-//
-//                $("#popDialog").dialog({
-//                    open: function(event, ui) {
-//                        $(this).load('/goods/view/'+sels);
-//                    },
-//                    title: '查看商品'
-//                });
-//                $("#popDialog").dialog("open");
-//                return false;
-//            }
-//        }
-//    });
+
     $("#edit_btn").click(function(){
         var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
+        var sel = rowData.id;
         if(sels==""){
             $().message("请选择要修改的项！");
         }else{
@@ -189,7 +85,7 @@ $(function(){
                 //$().message("修改信息成功！");
                 $("#popDialog").dialog({
                     open: function(event, ui) {
-                        $(this).load('/adm/change_customer_info/edit/'+sels);
+                        $(this).load('/adm/change_customer_info/edit/'+sel);
                     },
                     title: '修改用户信息'
                 });
@@ -200,49 +96,39 @@ $(function(){
     });
     $("#del_btn").click(function(){
         var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
+        var sel = rowData.id;
         if(sels==""){
             $().message("请选择要删除的项！");
         }else{
             if(confirm("您是否确认删除？")){
-                $().message("删除成功！");
-//                $.ajax({
-//                    type: "delete",
-//                    url: "/goods/"+sels,
-//                    data: "_csrf=#{csrf}",
-//                    beforeSend: function() {
-//                        $().message("正在请求...");
-//                    },
-//                    error:function(){
-//                        $().message("请求失败...");
-//                    },
-//                    success: function(msg){
-//                        if(200 == msg.status){
-//                            var arr = msg._ids.split(',');
-//                            $.each(arr,function(i,n){
-//                                if(arr[i]!=""){
-//                                    $("#change_customer_info_table").jqGrid('delRowData',n);
-//                                }
-//                            });
-//                            $().message("已成功删除!");
-//                        }else{
-//                            $().message("操作失败！");
-//                        }
-//                    }
-//                });
+                //$().message("删除成功！");
+                $.ajax({
+                    type: "delete",
+                    url: "/adm/change_customer_info/delete/"+sel,
+                    //data: "_csrf=#{csrf}",
+                    beforeSend: function() {
+                        $().message("正在请求...");
+                    },
+                    error:function(){
+                        $().message("请求失败...");
+                    },
+                    success: function(msg){
+                        if(200 == msg.status){
+                            var arr = sels.toString().split(',');
+                            $.each(arr,function(i,n){
+                                if(arr[i]!=""){
+                                    $("#change_customer_info_table").jqGrid('delRowData',n);
+                                }
+                            });
+                            $().message("已成功删除!");
+                        }else{
+                            $().message("操作失败！");
+                        }
+                    }
+                });
             }
         }
     });
-//    $("#find_btn").click(function(){
-//        var obj = new Object();
-//        $(".query_input").each(function(){
-//            var key = $(this).attr('id');
-//            var value = $(this).val();
-//            obj[key] = value;
-//        });
-//        $("#list").jqGrid('setGridParam',{
-//            url:"/goods/index",
-//            postData:obj,
-//            page:1
-//        }).trigger("reloadGrid");
-//    });
+
 });

@@ -14,9 +14,9 @@ var sanitize = require('validator').sanitize;
 var config = require('../config').config;
 var formidable = require('formidable');
 var EventProxy = require('eventproxy').EventProxy;
-var fs = require('fs');
-var path = require('path');
-var sys = require('sys');
+//var fs = require('fs');
+//var path = require('path');
+//var sys = require('sys');
 
 exports.index = function(req, res, next, err) {
     var user = req.session.user;

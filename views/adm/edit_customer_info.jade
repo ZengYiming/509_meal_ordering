@@ -1,1 +1,34 @@
-p hello
+script(type='text/javascript', src='/js/adm/edit_customer_info.js')
+.form-container
+    form#add_form
+        fieldset#goodsContent
+            legend(style='color: #C00; font-style: normal;') 用户信息
+            div
+                label  编号：#{locals.id?id:''}
+            div
+                label.error   用户名：
+                input#username.allowInput(type='text', name='username')
+            div
+                label  密码：
+                input#password.allowInput(type='text', name='password')
+            div
+                label.error  姓名：
+                input#name.allowInput(type='text', name='name')
+            div
+                label  电话：
+                input#tel.allowInput(type='text', name='tel')
+            div
+                label.error  电子邮件：
+                input#email.allowInput(type='text', name='email')
+            div
+                label.error  头像：
+                img(src='#{avatar_src}',name='avatar', alt='avatar', height=100, width=100)
+                input(id='upload',name='upload', type='file', multiple='multiple')
+        fieldset
+            legend
+            div
+                //input(type='hidden', name='_csrf', value='#{csrf}')
+                //input#_id(type='hidden', name='_id',value='#{locals._id?_id:''}')
+                //input#pageState(type='hidden', name='pageState', value='#{pageState}')
+                input#save.btn(type='button', value=' 保 存 ')
+                input#close.btn(type='button', value=' 关 闭 ', onclick='$("#popDialog").dialog("close");')
