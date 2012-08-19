@@ -1,11 +1,12 @@
 
+p#error
 form(id='change_psw',name='change_psw', method='post', action='/user/change_psw')
     ul
         li
-            input(id='old_pass',name='old_pass',type='password',placeholder='原密码')
+            input(id='change_old_pass',name='old_pass',type='password',placeholder='原密码')
         li
-            input(id='new_pass',name='new_pass',type='password',placeholder='新密码')
+            input(id='change_new_pass',name='new_pass',type='password',placeholder='新密码')
         li
-            input(id='re_pass',name='re_pass',type='password',placeholder='新密码确认')
+            input(id='change_re_pass',name='re_pass',type='password',placeholder='新密码确认')
         li
-            input(type='submit',name='submit', id='submit',value='提交')
+            input(type='button',name='submit', id='user_psw_submit',value='提交')

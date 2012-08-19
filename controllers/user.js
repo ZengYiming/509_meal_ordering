@@ -20,9 +20,37 @@ var sys = require('sys');
 
 exports.index = function(req, res, next, err) {
     var user = req.session.user;
-    var img = user.image || 'default_avatar.gif';
-    var avatar_src = '/image/avatar/' + img;
-    res.render('user/index',{title: '我的首页', error: err, username: user.username, name: user.name, tel: user.tel, email: user.email, avatar_src: avatar_src});
+    var avatar_src = user.image || '/image/avatar/default_avatar.gif';
+    //res.render('user/index',{title: '我的首页', error: err, username: user.username, name: user.name, tel: user.tel, email: user.email, avatar_src: avatar_src});
+    res.write(user.name + '<ul id="user_info_sub">' +
+                '<li>' +
+                    '<img class="corner_inset_left" alt="" src="/image/headline/corner_inset_left.png"/>' +
+                    '<img src="' + avatar_src + '" name="avatar" alt="avatar" height="50" width="50"/>' +
+                    '<img class="corner_inset_right" alt="" src="/image/headline/corner_inset_right.png"/>'+
+                '</li>' +
+                '<li>' +
+                    '用户名：' + user.username +
+/*                '</li>' +
+                '<li>' +*/
+                    '<br/>姓名：' + user.name +
+/*                '</li>' +
+                '<li>' +*/
+                    '<br/>联系电话：' + user.tel +
+/*                '</li>' +
+                '<li>' +*/
+                    '<br/>Email：' + user.email +
+                '</li>' +
+                '<li>' +
+                '<a id="user_info_change">更改信息</a>' +
+                '<a id="user_info_psw">重设密码</a>' +
+                '</li>' +
+                '<li class="last">' +
+                    '<img class="corner_left" alt="" src="/image/headline/corner_left.png"/>' +
+                    '<img class="middle" alt="" src="/image/headline/dot.gif"/>' +
+                    '<img class="corner_right" alt="" src="/image/headline/corner_right.png"/>' +
+                '</li>' +
+              '</ul>');
+    res.end();
     return;
 };
 
@@ -30,7 +58,7 @@ exports.change_psw = function(req, res, next) {
     var method = req.method.toLowerCase();
 
     if(method == 'get') {
-        res.render('user/change_psw');
+        res.render('user/change_psw', {layout: false});
         return;
     }
     if(method == 'post') {
@@ -44,23 +72,29 @@ exports.change_psw = function(req, res, next) {
         re_pass = sanitize(re_pass).xss();
 
         if(user.password != old_pass) {
-            res.render('user/change_psw', {error: '原密码错误'});
+            res.json({status: 412, error: '原密码错误'}, 412);
+            //res.render('user/change_psw', {error: '原密码错误'});
             return;
         }
         if(new_pass.length < 6) {
-            res.render('user/change_psw', {error:'密码至少需要6个字符。'});
+            res.json({status: 412, error: '密码至少需要6个字符'}, 412);
+            //res.render('user/change_psw', {error:'密码至少需要6个字符。'});
             return;
         }
         if(new_pass != re_pass) {
-            res.render('user/change_psw', {error:'两次密码输入不一致。'});
+            res.json({status: 412, error: '两次密码输入不一致'}, 412);
+            //res.render('user/change_psw', {error:'两次密码输入不一致。'});
             return;
         }
 
         User.update({id: user.id, password: new_pass}, function(err, info) {
             if(err) next(err);
             if(info) {
-                //console.log("info: " + sys.inspect(info));
-                exports.index(req, res, next, "密码修改成功");
+                //console.log("in user.js update, info: " + sys.inspect(info));
+                //exports.index(req, res, next, "密码修改成功");
+                req.session.user.password = new_pass;
+                res.json({}, 200);
+                return;
             }
         });
     }
@@ -71,14 +105,12 @@ exports.change_info = function(req, res, next) {
 
     function feedback(err) {
         var user = req.session.user;
-        var img = user.image || 'default_avatar.gif';
-        var avatar_src = '/image/avatar/' + img;
-        res.render('user/change_info',{title: '更改用户信息',error: err, username: user.username, name: user.name, tel: user.tel, email: user.email, avatar_src: avatar_src});
+        var avatar_src = user.image || '/image/avatar/default_avatar.gif';
+        res.render('user/change_info',{layout: false, error: err, username: user.username, name: user.name, tel: user.tel, email: user.email, avatar_src: avatar_src});
         return;
     }
 
     if(method == 'get') {
-
         feedback('');
     }
     if(method == 'post') {
@@ -88,53 +120,32 @@ exports.change_info = function(req, res, next) {
 
         ep.once('error', function(result) {
             ep.unbind();//remove all event
-            return feedback(result);
+            res.json({status: 400, error:result}, 400);
+            return;
         });
         ep.on('update', function() {
             updateSession();
         });
         ep.on('done', function() {
-            exports.index(req, res, next, "信息修改成功");
+            res.json({},200);
         });
-
-
-        form.uploadDir = path.join(__dirname, '../public/image/avatar/');
-        form.encoding='utf-8';
-        form.maxFieldsSize=5*1024*1024;
-        form.keepExtensions=false;
-
-        form.parse(req, function(error, fields, files) {
-            if(error) throw error;
-
-//            console.log('in if condition'+sys.inspect({fields: fields, files: files}));
-            //operate fields
-            var name = sanitize(fields.name).trim();
+            var name = sanitize(req.body.name).trim();
             name = sanitize(name).xss();
-            var tel = sanitize(fields.tel).trim();
+            var tel = sanitize(req.body.tel).trim();
             tel = sanitize(tel).xss();
-            var email = sanitize(fields.email).trim();
+            var email = sanitize(req.body.email).trim();
             email = email.toLowerCase();
             email = sanitize(email).xss();
 
             try{
                 check(email, '不正确的电子邮箱。').isEmail();
             }catch(e){
-                feedback(e.message);
+                //feedback(e.message);
+                res.json({status: 400, error:e.message}, 400);
                 return;
             }
 
-            //operate files
-            var avatar_src = files.upload.path + ".gif";
-
-            fs.renameSync(files.upload.path, avatar_src);
-
-            var image;
-            if(files.upload.size !== 0) {
-                image = path.basename(avatar_src);
-            }else {
-                image = user.image;
-            }
-            User.update({id: user.id, name: name, tel: tel, email: email, image: image}, function(err, info) {
+            User.update({id: user.id, name: name, tel: tel, email: email}, function(err, info) {
                 if(err) next(err);
                 if(info) {
                     //console.log("info: " + sys.inspect(info));
@@ -142,7 +153,6 @@ exports.change_info = function(req, res, next) {
                 }
             });
 
-        });
 
         function updateSession() {
             var member = req.session.user.member;
@@ -155,4 +165,63 @@ exports.change_info = function(req, res, next) {
         }
     }
     return;
+};
+
+exports.upload_avatar = function(req, res, next) {
+    console.log("in user.js  upload_avatar");
+    var ep = EventProxy.create();
+    var form = new formidable.IncomingForm();
+
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('update', function() {
+        updateSession();
+    });
+    ep.on('done', function(avatar_src) {
+        //res.redirect('/customer/change_info');
+        var rsJson = {avatar_src: avatar_src, message: '头像更新成功'};
+        res.json(rsJson, 201);
+    });
+
+
+    form.uploadDir = path.join(__dirname, '../public/image/avatar/');
+    form.encoding='utf-8';
+    form.maxFieldsSize=20*1024*1024;
+    form.keepExtensions=false;
+
+    form.parse(req, function(error, fields, files) {
+        //console.log('in if condition'+sys.inspect({fields: fields, files: files}));
+        if(error) throw error;
+        var user = req.session.user;
+        var avatar_src = files.avatar.path + ".gif";
+        var image;
+        if(files.avatar.size !== 0) {
+            image = '/image/avatar/' + path.basename(avatar_src);
+            fs.renameSync(files.avatar.path, avatar_src);
+            User.update({id: user.id, image: image}, function(err, info) {
+                if(err) next(err);
+                if(info) {
+                    console.log("info: " + sys.inspect(info));
+                    ep.trigger('update');
+//
+                }
+            });
+        }else {
+            //image = user.image;
+            ep.trigger('update');
+        }
+    });
+
+    function updateSession() {
+        var user = req.session.user;
+        var member = req.session.user.member;
+        User.findOne({'id': user.id}, function(err, result) {
+            if(err) next(err);
+            req.session.user = result;
+            req.session.user.member = member;
+            ep.trigger('done', result.image);
+        });
+    }
 };

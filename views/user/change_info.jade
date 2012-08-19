@@ -1,21 +1,32 @@
 
-form(id='change_info',name='change_info', method='post',enctype="multipart/form-data", action='/user/change_info')
-    ul
-        li
-            h3 更改头像:
-            img(src='#{avatar_src}',name='avatar', alt='avatar', height=100, width=100)
-            input(id='upload',name='upload', type='file', multiple='multiple')
-        li
-            h3 用户名:
-            h4 #{username}
-        li
-            h3 姓名:
-            input(id='name',name='name',type='text',placeholder='姓名', value='#{name}')
-        li
-            h3 联系电话:
-            input(id='tel',name='tel',type='text',placeholder='联系电话', value='#{tel}')
-        li
-            h3 Email:
-            input(id='email',name='email',type='text',placeholder='电子邮箱', value='#{email}')
-        li
-            input(type='submit',name='submit', id='submit',value='提交')
+
+
+p
+    h4 更改头像:
+p
+    div.preview
+        img(src='#{avatar_src}',id='avatar', name='avatar', alt='avatar', height=100, width=100)
+    span#uploadinfo 点击图片更新头像
+    div#uploadarea(style="visibility:hidden")
+        input#avatarUpload(type="button", value="上传头像")
+
+p#error
+form(id='change_info',name='change_info', method='post', action='/user/change_info')
+    table
+        tr
+            th
+                h4姓名:
+            th
+                input(id='user_name',name='name',type='text',placeholder='姓名', value='#{name}')
+        tr
+            th
+                h4 联系电话:
+            th
+                input(id='user_tel',name='tel',type='text',placeholder='联系电话', value='#{tel}')
+        tr
+            th
+                h4 Email:
+            th
+                input(id='user_email',name='email',type='text',placeholder='电子邮箱', value='#{email}')
+    p
+        input(id='user_info_submit', type='button',name='submit', value='提交更改')

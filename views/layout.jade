@@ -48,14 +48,15 @@ html
           //script(type='text/javascript', src='/libs/bootstrap/js/bootstrap.js')
           //script(type='text/javascript', src='/javascripts/main.js')
 
+          //ajax-upload
+          script(type='text/javascript', src='/libs/ajax-upload/ajaxupload.js')
+
           //other
           script(type='text/javascript', src='/libs/jqGrid_fancybox/js/jquery.form.js')
           script(type='text/javascript', src='/libs/jqGrid_fancybox/js/jquery.message.js')
           script(type='text/javascript', src='/js/headline.js')
 
-        - if (typeof(error) !== 'undefined') {
-                    != error
-                - }
+
       body
         //
            navbar
@@ -64,24 +65,16 @@ html
             .container
               div(style='margin-left: 50px;')
                   ul#menu
-                    li.logo
-                      img(style='float: left;', alt='', src='/image/headline/menu_left.png')
-                      ul#main
-                        li
-                          | Welcome to
-                          b Create Vimeo-like top navigation
-                          | tutorial!
-                        li.last
-                          img.corner_left(alt='', src='/image/headline/corner_blue_left.png')
-                          img.middle(alt='', src='/image/headline/dot_blue.png')
-                          img.corner_right(alt='', src='/image/headline/corner_blue_right.png')
-
                   img(style='float: left;', alt='', src='/image/headline/menu_right.png')
               div(style='float: none; clear: both;')
         //
            wrapper
         #wrapper
             #main
+                - if (typeof(error) !== 'undefined') {
+                    != error
+                - }
+                #homeDialog
                 != body
         //
            footer

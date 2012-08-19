@@ -1,21 +1,26 @@
+p#error
 div
     -if(typeof(gross) != 'undefined')
         h3 订单总金额:#{gross}
 div
-    所订菜品：
+    b 所订菜品：
     table
         tr
             th
                 菜品名
             th
                 份数
+            th
+                金额
         -if(typeof(deals) != 'undefined')
           - each deal in deals
             tr
-                th
+                td
                     = deal.dish.name
-                th
+                td
                     = deal.quantity
+                td
+                    = deal.sum
 div
     - var this_name = '', this_tel = '', this_addr = '';
     -if(typeof(rec_name) !== 'undefined') {
@@ -35,4 +40,4 @@ div
         br
         input(type="text", id="rec_addr", name="rec_addr", placeholder="送餐地址", value="#{this_addr}")
         br
-        input(type="submit", name="submit", id="submit", value="提交订单")
+        input(type="button", name="submit", id="order_add_submit", value="提交订单")
