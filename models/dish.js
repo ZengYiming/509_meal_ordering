@@ -56,4 +56,15 @@ Dish.prototype.count = function(opt, cb) {
     });
 };
 
+Dish.prototype.create = function(body, cb) {
+    var opt = {
+        table: 'dish',
+        fields: body
+    };
+    mysql.insert(opt, function(err, info) {
+        if(err) return cb(err);
+        return cb(err, info);
+    });
+};
+
 exports = module.exports = createDish;

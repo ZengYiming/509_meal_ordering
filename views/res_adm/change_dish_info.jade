@@ -4,7 +4,7 @@ form
     - if (typeof(error) !== 'undefined') {
         = error
     - }
-    h1 菜品信息管理
+    h1  #{res_name}菜品信息管理
     table(border='0', width='100%')
             tr
                 td
@@ -14,6 +14,7 @@ form
                             tr
                                 td(width='100%', align='left', valign='baseline', colspan=4)
                                     #page_operate(style='visibility:none;')
+                                        input#res_id(type='hidden', name='res_id',value='#{res_id}')
                                         input#add_btn.btn(type='button', value='新增菜品')
                                         input#edit_btn.btn(type='button', value='修改选中行')
                                         input#del_btn.btn(type='button', value='删除选中行')

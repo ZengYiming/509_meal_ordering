@@ -509,7 +509,7 @@ exports.addRestaurant= function(req, res, next) {
     var tel = req.body.tel;
     var address = req.body.address;
     var intro = req.body.intro;
-    var image = req.body.image;
+    //var image = req.body.image;
 
     try {
         check(name, "保存失败，名称不能为空！").notNull();
@@ -518,7 +518,7 @@ exports.addRestaurant= function(req, res, next) {
         check(intro, "保存失败，简要介绍不能为空！").notNull();
 
         //创建时间
-        Restaurant.create({name:name, tel:tel, address:address, intro:intro,  image:image}, function(err,info){
+        Restaurant.create({name:name, tel:tel, address:address, intro:intro}, function(err,info){
             if(err) return next(err);
 
             //res.json({status:200, error:'更新商品信息成功!'}, 200);

@@ -1,15 +1,8 @@
 /**
  * Created with JetBrains WebStorm.
  * User: baiweiya
- * Date: 12-8-17
- * Time: 上午9:24
- * To change this template use File | Settings | File Templates.
- */
-/**
- * Created with JetBrains WebStorm.
- * User: baiweiya
- * Date: 12-8-16
- * Time: 下午5:26
+ * Date: 12-8-20
+ * Time: 下午5:05
  * To change this template use File | Settings | File Templates.
  */
 $(function(){
@@ -24,26 +17,26 @@ $(function(){
     $("#save").click(function(){
         //var id = rowData.id;
         var name = $("#name").val();
-        var tel = $("#tel").val();
-        var address = $("#address").val();
+        var price = $("#price").val();
         var intro = $("#intro").val();
         //var image = $("#upload").val();
 
-        var restaurant_json = {name:name, tel:tel, address:address, intro:intro};
+        var dish_json = {name:name, price:price, intro:intro};
 
-        console.log("add_restaurant_json:"+JSON.stringify(restaurant_json));
+        console.log("add_dish_json:"+JSON.stringify(dish_json));
 
         $.ajax({
             type: "post",
-            url: '/adm/add_restaurant_info',
+            url: '/res_adm/add_dish_info',
             dataType: "json",
             global: false,
             async: false,
-            data: restaurant_json,
+            data: dish_json,
             success: function (data, textStatus) {
                 alert("添加成功！");
                 $("#popDialog").dialog("close");
-                $("#change_restaurant_info_table").trigger("reloadGrid", [{current:true}]);
+                $('#change_dish_info_table').setGridParam({url:'/res_adm/change_dish_info/findall/'+$("#res_id").val()});
+                $("#change_dish_info_table").trigger("reloadGrid", [{current:true}]);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 var res = JSON.parse(XMLHttpRequest.responseText);

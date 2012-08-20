@@ -34,7 +34,7 @@ exports.show_info = function(req, res, next) {
     Order_dish.findAll({where: 'AND order_id=' + order_id}, function(err, result) {
         if(err) return next(err);
         var dishes = [];
-        ep.after('getDish', result.length, function(dish) {
+        ep.after('getDish', result.length, function() {
             ep.trigger('findDishes', dishes);
         });
         for(var k in result) {
@@ -54,7 +54,7 @@ exports.show_info = function(req, res, next) {
                         dish.quantity = value.quantity;
                         //console.log("in order show_info, dish: " + sys.inspect(dish));
                         dishes.push(dish);
-                        ep.trigger('getDish', dish);
+                        ep.trigger('getDish');
                     }
                 });
             });

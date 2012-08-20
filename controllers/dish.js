@@ -20,8 +20,13 @@ var path = require('path');
 var sys = require('sys');
 
 exports.change_dish_info = function(req, res, next){
-    res.render('res_adm/change_dish_info',{title:'菜品信息管理'});
-
+    var res_id = req.params.id;
+    console.log(res_id);
+    Restaurant.findOne({id:res_id},function(err,rs){
+        if(err) next(err);
+        //console.log(rs);
+        res.render('res_adm/change_dish_info',{title:'菜品信息管理',res_id:rs.id,res_name:rs.name});
+    });
 };
 exports.findalldish = function(req, res, next){
     var page = req.query.page;//起始行数 for jqgrid
@@ -34,8 +39,9 @@ exports.findalldish = function(req, res, next){
     var type_id = req.query.type_id;//商品类型ID
     var ep = EventProxy.create();
 
+    var res_id = req.params.res_id;
     //根据前台页面传入的查询条件，开始拼接where语句
-    var where = ' ';
+    var where = ' and restaurant_id='+res_id;
 
     function feedback(result) {
         if(200 == result.status) {
@@ -123,9 +129,45 @@ exports.findalldish = function(req, res, next){
             jsonObj.rows = rowsArray;
 
             var jsonStr = JSON.stringify(jsonObj);
-            console.log('jsonStr-restaurants:'+jsonStr);
+            console.log('jsonStr-dishes:'+jsonStr);
             return res.json(jsonObj, 200);
 
         });
     };
+};
+exports.addpageDish = function(req, res, next){
+    console.log("新建菜品。。。");
+    try {
+        var img = 'default_dish.gif';
+        var dish_src = '/image/dish/' + img;
+        //check(id, "流水号不能为空！").notNull();
+        res.render('res_adm/add_dish_info', { layout: false, dish_src: dish_src});
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.addDish = function(req, res, next){
+    console.log("save new dish。。。");
+    //开始校验输入数值的正确性
+    var name = req.body.name;
+    var price = req.body.price;
+    var intro = req.body.intro;
+    //var image = req.body.image;
+
+    try {
+        check(name, "保存失败，名称不能为空！").notNull();
+        check(price, "保存失败，价格不能为空！").notNull();
+        check(intro, "保存失败，简要介绍不能为空！").notNull();
+
+        //创建时间
+        Dish.create({name:name, price:price, intro:intro}, function(err,info){
+            if(err) return next(err);
+
+            //res.json({status:200, error:'更新商品信息成功!'}, 200);
+            var jsonObj = {dish:{id:info.insertId}};
+            return res.json(jsonObj, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
 };

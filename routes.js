@@ -15,6 +15,7 @@ var user = require("./controllers/user");
 var shopping_cart = require("./controllers/shopping_cart");
 var adm = require("./controllers/adm");
 var order = require("./controllers/order");
+var resadm = require("./controllers/resadm");
 var dish = require("./controllers/dish");
 
 function auth(req, res, next) {
@@ -104,6 +105,9 @@ exprots = module.exports = function(app) {
     app.get('/adm/change_restaurant_info/add',authToAdm,adm.addpageRestaurant);
     app.post('/adm/add_restaurant_info',authToAdm,adm.addRestaurant);
     //res adm
-    app.get('/res_adm/change_dish_info/:id',authToRes_adm,dish.change_dish_info);
-    app.get('/res_adm/change_dish_info/findall',authToRes_adm,dish.findalldish);
+    app.get('/res_adm/get_res',authToRes_adm,resadm.get_res);
+    app.get('/res_adm/choose_restaurant/:id',authToRes_adm,dish.change_dish_info);
+    app.get('/res_adm/change_dish_info/findall/:res_id',authToRes_adm,dish.findalldish);
+    app.get('/res_adm/change_dish_info/add',authToRes_adm,dish.addpageDish);
+    app.post('/res_adm/add_dish_info',authToRes_adm,dish.addDish);
 };

@@ -179,13 +179,14 @@ exports.login = function(req, res, next) {
             var user = req.session.user;
             if(req.accepts('html')) {
                 //check at some page just jump to home page 
-                var refer = req.session._loginReferer || 'home';
+                /*var refer = req.session._loginReferer || 'home';
                 for (var i=0, len=notJump.length; i!=len; ++i) {
                     if (refer.indexOf(notJump[i]) >= 0) {
                         refer = 'home';
                         break;
                     }
-                }
+                }*/
+                var refer = 'home';
                 res.redirect(refer);
             }
             else {

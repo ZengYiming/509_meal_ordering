@@ -22,8 +22,10 @@ var colModel = [
     {name:'intro',index:'intro', width:200, align:"center",sortable:true},
     {name:'image',index:'image', width:200, align:"center",sortable:true}];
 $(function(){
+    var res_id = $("#res_id").val();
+    //alert(res_id);
     jQuery("#change_dish_info_table").jqGrid({
-        url:'/res_adm/change_dish_info/findall',
+        url:'/res_adm/change_dish_info/findall/'+res_id,
         datatype: "json",
         mtype: 'GET',
         colNames:colNames,

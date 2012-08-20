@@ -20,7 +20,9 @@ var sys = require('sys');
 
 exports.index = function(req, res, next, err) {
     var user = req.session.user;
+    //console.log('user: ' + sys.inspect(user));
     var avatar_src = user.image || '/image/avatar/default_avatar.gif';
+    //console.log('avatar_src: ' + avatar_src);
     //res.render('user/index',{title: '我的首页', error: err, username: user.username, name: user.name, tel: user.tel, email: user.email, avatar_src: avatar_src});
     res.write(user.name + '<ul id="user_info_sub">' +
                 '<li>' +
