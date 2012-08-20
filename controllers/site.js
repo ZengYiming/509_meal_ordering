@@ -54,14 +54,15 @@ exports.headLine = function (req, res, next) {
         '<li id="home_page"><a href="http://localhost:8888/">首页</a></li>';
     if(req.session.user) {
         var user = req.session.user;
+        var member = user.member;
         headline += '<li id="user_info">' + user.name + '</li>';
-        for(var k in user.member) {
-            if(user.member[k].role == 1) {
+        //for(var k in user.member) {
+            if(has(member, 1)) {
                 headline += '<li id="credit">积分' +
                     '<ul id="credit_sub">' +
                         '<li>' +
                             '<img class="corner_inset_left" alt="" src="/image/headline/corner_inset_left.png"/>' +
-                            '当前积分：'  +  user.member[k].credits +
+                            '当前积分：98' +
                             '<img class="corner_inset_right" alt="" src="/image/headline/corner_inset_right.png"/>'+
                         '</li>' +
                         '<li class="last">' +
@@ -74,17 +75,25 @@ exports.headLine = function (req, res, next) {
                 headline += '<li id="shopping_cart">我的购物车</li>';
                 headline += '<li id="orders">我的订单</li>';
             }
-            else if(user.member[k].role == 0) {
-                headline += '<li><a href="http://localhost:8888/adm/change_customer_info">用户信息管理</a></li>';
-                headline += '<li><a href="http://localhost:8888/adm/change_restaurant_info">店铺信息管理</a></li>';
+            if(has(member, 0)) {
+                headline += '<li><a href="/adm/change_customer_info">用户信息管理</a></li>';
+                headline += '<li><a href="/adm/change_restaurant_info">店铺信息管理</a></li>';
             }
-            else if(user.member[k].role == 2) {
-                headline += '<li><a href="#">餐馆管理</a></li>';
+            if(has(member, 2)) {
+                headline += '<li id="resadm">餐馆管理</li>';
             }
-        }
-        headline += '<li><a href="http://localhost:8888/signout">退出</a></li>';
+        //}
+        headline += '<li><a href="/signout">退出</a></li>';
     }else {
-        headline += '<li><a href="http://localhost:8888/signin/">登录</a></li>' + '<li><a href="http://localhost:8888/signup/">注册</a></li>';
+        headline += '<li><a href="/signin/">登录</a></li>' + '<li><a href="/signup/">注册</a></li>';
+    }
+
+    function has(member, role) {
+        for(var k in member) {
+            var value = member[k];
+            if(value.role == role) return true;
+        }
+        return false;
     }
 
     res.write(headline);

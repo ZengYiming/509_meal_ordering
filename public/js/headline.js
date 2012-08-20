@@ -170,7 +170,30 @@ $(document).ready(function() {
         show_orders();
     });
 
-
+    //resadm
+    $('#resadm').mouseenter(function() {
+        $.ajax({
+            type: "get",
+            url:  "/res_adm/get_res",
+            dataType: "html",
+            global: false,
+            async: true,
+            success: function (data, textStatus) {
+//                console.log("data:"+JSON.stringify(data));
+                $('#resadm').html(data);
+                $('#resadm_sub').show();
+                /*$('#resadm').mouseover(function() {
+                    $('#resadm_sub').show();
+                });*/
+                $('#resadm').mouseleave(function() {
+                    $('#resadm_sub').hide();
+                });
+            },
+            error: function () {
+                $().message("获取信息失败！");
+            }
+        });
+    });
 
 });
 
@@ -197,7 +220,7 @@ function show_shopping_cart() {
         url: '/customer/shopping_cart',
         dataType: 'html',
         global: false,
-        async: false,
+        async: true,
         success: function(data) {
             $('#shopping_cart').html(data);
             $('#shopping_cart_sub').show();

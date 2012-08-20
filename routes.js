@@ -15,6 +15,7 @@ var user = require("./controllers/user");
 var shopping_cart = require("./controllers/shopping_cart");
 var adm = require("./controllers/adm");
 var order = require("./controllers/order");
+var resadm = require("./controllers/resadm");
 
 function auth(req, res, next) {
     if(req.session.user) {
@@ -95,5 +96,7 @@ exprots = module.exports = function(app) {
 
     app.get('/adm/change_restaurant_info',authToAdm,adm.change_restaurant_info);
     app.get('/adm/change_restaurant_info/findall',authToAdm,adm.findallrestaurants);
+
+    app.get('/res_adm/get_res', authToRes_adm, resadm.get_res);
 
 };
