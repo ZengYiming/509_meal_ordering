@@ -1,4 +1,12 @@
 script(type='text/javascript', src='/js/adm/edit_customer_info.js')
+p
+    h4 更改头像:
+p
+    div.preview
+        img(src='#{avatar_src}',id='avatar', name='avatar', alt='avatar', height=100, width=100)
+    span#uploadinfo 点击图片更新头像
+    div#uploadarea(style="visibility:hidden")
+        input#avatarUpload(type="button", value="上传头像")
 .form-container
     form#add_form
         fieldset#goodsContent
@@ -20,10 +28,6 @@ script(type='text/javascript', src='/js/adm/edit_customer_info.js')
             div
                 label.error  电子邮件：
                 input#email.allowInput(type='text', name='email')
-            div
-                label.error  头像：
-                img(src='#{avatar_src}',name='avatar', alt='avatar', height=100, width=100)
-                input(id='upload',name='upload', type='file', multiple='multiple')
         fieldset
             legend
             div

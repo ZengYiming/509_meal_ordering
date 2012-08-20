@@ -205,7 +205,6 @@ exports.upload_avatar = function(req, res, next) {
                 if(info) {
                     console.log("info: " + sys.inspect(info));
                     ep.trigger('update');
-//
                 }
             });
         }else {

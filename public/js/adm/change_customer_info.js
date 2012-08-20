@@ -81,7 +81,44 @@ $(function(){
             }else{
                 $("#popDialog").dialog({
                     open: function(event, ui) {
-                        $(this).load('/adm/change_customer_info/edit/'+sel);
+                        $(this).load('/adm/change_customer_info/edit/'+sel,function() {
+                            //avatar_upload
+                            var avatar = $('img#avatar');
+                            avatar.mouseover(function() {
+                                avatar.css("border","2px dotted red");
+                            });
+                            avatar.mouseout(function() {
+                                avatar.css("border","none");
+                            });
+                            avatar.click(function() {
+                                $("#uploadinfo").css("visibility","hidden");
+                                $("#uploadarea").css("visibility","visible");
+                            });
+
+                            var imageUpload = $('#imageUpload').interval;
+                            new AjaxUpload('avatarUpload', {
+                                action: '/adm/change_customer_info/upload_avatar/'+sel,
+                                name: 'avatar',
+                                autoSubmit: true,
+                                responseType: 'json',
+                                onSubmit: function(file, extension) {
+                                    //alert('onSubmit');
+                                    $('div.preview').addClass('loading');
+                                },
+                                onComplete: function(file, response) {
+                                    //alert('onComplete');
+                                    /*avatar.load(function(){
+                                     $('div.preview').removeClass('loading');
+                                     avatar.unbind();
+                                     });*/
+                                    //var r = JSON.parse(response);
+                                    avatar.attr('src', response.avatar_src);
+                                    $("span#uploadinfo").text(response.message);
+                                    $("span#uploadinfo").css("visibility","visible");
+                                    $("span#uploadarea").css("visibility","hidden");
+                                }
+                            });
+                        });
                     },
                     title: '修改用户信息'
                 });

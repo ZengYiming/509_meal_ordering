@@ -145,15 +145,82 @@ exports.userpageEdit = function(req, res, next) {
     // - 新增(pageState=0)： 所有输入框为空，显示：保存按钮
     // - 查看(pageState=1)： 输入框有数据，显示：关闭按钮
     // - 编辑(pageState=2)： 输入框有数据，显示：保存按钮 + 关闭按钮
-    var pageState = 2;
+    //var pageState = 2;
     try {
-        var user = req.session.user;
-        var img = user.image || 'default_avatar.gif';
-        var avatar_src = '/image/avatar/' + img;
-        check(id, "流水号不能为空！").notNull();
-        res.render('adm/edit_customer_info', { layout: false, id:id, avatar_src: avatar_src});
+        User.findOne({id:id},function(err,info){
+            if(err)  next(err);
+            var img = info.image || '/image/avatar/default_avatar.gif';
+            //var avatar_src = '/image/avatar/' + img;
+            check(id, "流水号不能为空！").notNull();
+            res.render('adm/edit_customer_info', { layout: false, id:id, avatar_src: img});
+        });
     }catch(e){
         res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.upload_avatar = function(req, res, next) {
+    var ep = EventProxy.create();
+    var form = new formidable.IncomingForm();
+    var id=req.params.id;
+    var image;
+    console.log('in adm.js  upload_avatar id='+id);
+
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('update', function() {
+        var user = req.session.user;
+        if(user.id == id){
+            updateSession();
+        }
+        else{
+            ep.trigger('done',image);
+        }
+    });
+    ep.on('done', function(avatar_src) {
+        //res.redirect('/customer/change_info');
+        console.log(avatar_src);
+        var rsJson = {avatar_src: avatar_src, message: '头像更新成功，点击保存退出！'};
+        res.json(rsJson, 201);
+    });
+
+
+    form.uploadDir = path.join(__dirname, '../public/image/avatar/');
+    form.encoding='utf-8';
+    form.maxFieldsSize=20*1024*1024;
+    form.keepExtensions=false;
+
+    form.parse(req, function(error, fields, files) {
+        //console.log('in if condition'+sys.inspect({fields: fields, files: files}));
+        if(error) throw error;
+        var user = req.session.user;
+        var avatar_src = files.avatar.path + ".gif";
+        if(files.avatar.size !== 0) {
+            image = '/image/avatar/' + path.basename(avatar_src);
+            fs.renameSync(files.avatar.path, avatar_src);
+            User.update({id: id, image: image}, function(err, info) {
+                if(err) next(err);
+                if(info) {
+                    //console.log("info: " + sys.inspect(info));
+                    ep.trigger('update');
+                }
+            });
+        }else {
+            //image = user.image;
+            ep.trigger('update');
+        }
+    });
+
+    function updateSession() {
+        var user = req.session.user;
+        var member = req.session.user.member;
+        User.findOne({'id': user.id}, function(err, result) {
+            if(err) next(err);
+            req.session.user = result;
+            req.session.user.member = member;
+            ep.trigger('done', result.image);
+        });
     }
 };
 
@@ -166,8 +233,8 @@ exports.updateUser = function(req, res, next) {
     var name = req.body.name;
     var tel = req.body.tel;
     var email = req.body.email;
-    var image = req.body.image;
-    console.log(image);
+    //var image = req.body.image;
+    //console.log(image);
     try {
         check(id, "保存失败，编号不能为空！").notNull();
         check(username, "保存失败，用户名不能为空！").notNull();
@@ -176,7 +243,7 @@ exports.updateUser = function(req, res, next) {
         check(tel, "保存失败，电话不能为空！").notNull();
         check(email, "保存失败，电子邮件不正确！").isEmail();
         //说明是更新数据
-        User.update({id:id, username:username, password:password, name:name, tel:tel, email:email, image:image}, function(err,info){
+        User.update({id:id, username:username, password:password, name:name, tel:tel, email:email}, function(err,info){
             if(err) return next(err);
 
             //res.json({status:200, error:'更新商品信息成功!'}, 200);
@@ -204,6 +271,8 @@ exports.deleteUser = function(req, res, next) {
         res.json({status:400, error:e.message}, 400);
     }
 };
+
+
 
 exports.change_restaurant_info = function(req, res, next){
     res.render('adm/change_restaurant_info',{title:'店铺信息管理'});
@@ -320,18 +389,62 @@ exports.restaurantpageEdit = function(req, res, next) {
     var id = req.params.id;
     console.log("开始 restaurantpageEdit 。。。id="+id);
     try {
-        var restaurant='default_restaurant.gif';
         Restaurant.findOne({id:id}, function(err,rs){
             if(err) return next(err);
-            restaurant=rs;
+            var img = rs.image || '/image/restaurant/default_restaurant.gif';
+            //var restaurant_src = '/image/restaurant/' + img;
+            check(id, "流水号不能为空！").notNull();
+            res.render('adm/edit_restaurant_info', { layout: false, id:id,restaurant_src: img});
         });
-        var img = restaurant.image || 'default_restaurant.gif';
-        var restaurant_src = '/image/restaurant/' + img;
-        check(id, "流水号不能为空！").notNull();
-        res.render('adm/edit_restaurant_info', { layout: false, id:id,restaurant_src: restaurant_src});
     }catch(e){
         res.json({status:400, error:e.message}, 400);
     }
+};
+exports.upload_restaurant = function(req, res, next) {
+    var ep = EventProxy.create();
+    var form = new formidable.IncomingForm();
+    var id=req.params.id;
+    var image;
+    console.log('in adm.js  upload_restaurant id='+id);
+
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('done', function(restaurant_src) {
+        //res.redirect('/customer/change_info');
+        //console.log(restaurant_src);
+        var rsJson = {restaurant_src: restaurant_src, message: '店铺图片更新成功，点击保存退出！'};
+        res.json(rsJson, 201);
+    });
+
+
+    form.uploadDir = path.join(__dirname, '../public/image/restaurant/');
+    form.encoding='utf-8';
+    form.maxFieldsSize=20*1024*1024;
+    form.keepExtensions=false;
+
+    form.parse(req, function(error, fields, files) {
+        //console.log('in if condition'+sys.inspect({fields: fields, files: files}));
+        if(error) throw error;
+        //var user = req.session.user;
+        var restaurant_src = files.restaurant.path + ".gif";
+        if(files.restaurant.size !== 0) {
+            image = '/image/restaurant/' + path.basename(restaurant_src);
+            fs.renameSync(files.restaurant.path, restaurant_src);
+            Restaurant.update({id: id, image: image}, function(err, info) {
+                if(err) next(err);
+                if(info) {
+                    //console.log("info: " + sys.inspect(info));
+                    console.log('succ');
+                    ep.trigger('done',image);
+                }
+            });
+        }else {
+            //image = user.image;
+            ep.trigger('update',image);
+        }
+    });
 };
 exports.updateRestaurant = function(req, res, next) {
     console.log("updateRestaurant。。。");
@@ -341,8 +454,8 @@ exports.updateRestaurant = function(req, res, next) {
     var tel = req.body.tel;
     var address = req.body.address;
     var intro = req.body.intro;
-    var image = req.body.image;
-    console.log(image);
+    //var image = req.body.image;
+    //console.log(image);
     try {
         check(id, "保存失败，编号不能为空！").notNull();
         check(name, "保存失败，姓名不能为空！").notNull();
@@ -350,7 +463,7 @@ exports.updateRestaurant = function(req, res, next) {
         check(address, "保存失败，地址不能为空！").notNull();
         check(intro, "保存失败，简要介绍不能为空！").notNull();
         //说明是更新数据
-        Restaurant.update({id:id, name:name, tel:tel, address:address, intro:intro,  image:image}, function(err,info){
+        Restaurant.update({id:id, name:name, tel:tel, address:address, intro:intro}, function(err,info){
             if(err) return next(err);
 
             //res.json({status:200, error:'更新商品信息成功!'}, 200);

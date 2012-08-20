@@ -1,4 +1,12 @@
 script(type='text/javascript', src='/js/adm/edit_restaurant_info.js')
+p
+    h4 更改店铺图片:
+p
+    div.preview
+        img(src='#{restaurant_src}',id='restaurant', name='restaurant', alt='restaurant', height=100, width=100)
+    span#uploadinfo 点击图片更新店铺图片
+    div#uploadarea(style="visibility:hidden")
+        input#restaurantUpload(type="button", value="上传店铺图片")
 .form-container
     form#add_form
         fieldset#goodsContent
@@ -17,10 +25,6 @@ script(type='text/javascript', src='/js/adm/edit_restaurant_info.js')
             div
                 label  简要介绍：
                 input#intro.allowInput(type='text', name='intro',size='100')
-            div
-                label.error  店铺图片：
-                img(src='#{restaurant_src}',name='restaurant', alt='restaurant', height=100, width=100)
-                input(id='upload',name='upload', type='file', multiple='multiple')
         fieldset
             legend
             div

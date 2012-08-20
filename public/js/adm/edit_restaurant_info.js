@@ -20,9 +20,9 @@ $(function(){
         var tel = $("#tel").val();
         var address = $("#address").val();
         var intro = $("#intro").val();
-        var image = $("#upload").val();
+       // var image = $("#upload").val();
 
-        var restaurant_json = {id:id,name:name, tel:tel, address:address, intro:intro, image:image};
+        var restaurant_json = {id:id,name:name, tel:tel, address:address, intro:intro};
 
         console.log("restaurant_json:"+JSON.stringify(restaurant_json));
 

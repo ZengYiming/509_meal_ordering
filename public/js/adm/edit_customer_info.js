@@ -22,9 +22,9 @@ $(function(){
         var name = $("#name").val();
         var tel = $("#tel").val();
         var email = $("#email").val();
-        var image = $("#upload").val();
+        //var image = $("#upload").val();
 
-        var user_json = {id:id,username:username, password:password, name:name, tel:tel, email:email, image:image};
+        var user_json = {id:id,username:username, password:password, name:name, tel:tel, email:email};
 
         console.log("user_json:"+JSON.stringify(user_json));
 
