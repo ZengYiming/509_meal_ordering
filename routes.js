@@ -89,11 +89,18 @@ exprots = module.exports = function(app) {
     //adm
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
     app.get('/adm/change_customer_info/findall',authToAdm,adm.findallusers);
-    app.get('/adm/change_customer_info/edit/:id',authToAdm,adm.pageEdit);
+    app.get('/adm/change_customer_info/edit/:id',authToAdm,adm.userpageEdit);
     app.post('/adm/edit_customer_info/update',authToAdm,adm.updateUser);
     app.delete('/adm/change_customer_info/delete/:ids',authToAdm,adm.deleteUser);
-
+    //adm restaurant
     app.get('/adm/change_restaurant_info',authToAdm,adm.change_restaurant_info);
     app.get('/adm/change_restaurant_info/findall',authToAdm,adm.findallrestaurants);
-
+    app.get('/adm/change_restaurant_info/edit/:id',authToAdm,adm.restaurantpageEdit);
+    app.post('/adm/edit_restaurant_info/update',authToAdm,adm.updateRestaurant);
+    app.delete('/adm/change_restaurant_info/delete/:ids', authToAdm,adm.deleteRestaurant);
+    app.get('/adm/change_restaurant_info/add',authToAdm,adm.addpageRestaurant);
+    app.post('/adm/add_restaurant_info',authToAdm,adm.addRestaurant);
+    //res adm
+    app.get('/res_adm/change_dish_info',authToRes_adm,dish.change_dish_info);
+    app.get('/res_adm/change_dish_info/findall',ahtuToRes_adm,dish.findalldish);
 };

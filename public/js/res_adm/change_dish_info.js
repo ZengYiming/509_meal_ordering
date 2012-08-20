@@ -1,23 +1,29 @@
 /**
  * Created with JetBrains WebStorm.
  * User: baiweiya
+ * Date: 12-8-20
+ * Time: 上午9:45
+ * To change this template use File | Settings | File Templates.
+ */
+/**
+ * Created with JetBrains WebStorm.
+ * User: baiweiya
  * Date: 12-8-14
  * Time: 下午2:58
  * To change this template use File | Settings | File Templates.
  */
 //设置前台页面显示的表格列头
-var colNames = ['编号', '店铺名称', '电话', '地址','简要介绍','店铺图片'];
+var colNames = ['编号', '菜品名称', '价格', '简要介绍','菜品图片'];
 //设置前台页面显示的表格数据
 var colModel = [
     {name:'id',index:'id', width:100, align:"center",sortable:true},
     {name:'name',index:'name', width:200, align:"center",sortable:true},
-    {name:'tel',index:'tel', width:100, align:"center",sortable:true},
-    {name:'address',index:'address', width:200, align:"center",sortable:true},
+    {name:'price',index:'price', width:100, align:"center",sortable:true},
     {name:'intro',index:'intro', width:200, align:"center",sortable:true},
     {name:'image',index:'image', width:200, align:"center",sortable:true}];
 $(function(){
-    jQuery("#change_restaurant_info_table").jqGrid({
-        url:'/adm/change_restaurant_info/findall',
+    jQuery("#change_dish_info_table").jqGrid({
+        url:'/res_adm/change_dish_info/findall',
         datatype: "json",
         mtype: 'GET',
         colNames:colNames,
@@ -27,11 +33,11 @@ $(function(){
         multiselectWidth: 25, //设置多选列宽度
         rowNum:10,
         rowList:[10,20,30],
-        pager: '#change_restaurant_info_pager',
+        pager: '#change_dish_info_pager',
         sortname: 'id',
         sortorder:'asc',
         viewrecords: true,
-        caption:"店铺列表",
+        caption:"菜品列表",
         autowidth: true, //自动匹配宽度
         height: 300,
         prmNames : {
@@ -64,16 +70,16 @@ $(function(){
     $("#add_btn").click(function(){
         $("#popDialog").dialog({
             open: function(event, ui) {
-                $(this).load('/adm/change_restaurant_info/add');
+                $(this).load('/res_adm/change_dish_info/add');
             },
-            title: '添加新店铺'
+            title: '添加新菜品'
         });
         $("#popDialog").dialog("open");
         return false;
     });
     $("#edit_btn").click(function(){
-        var sels = $("#change_restaurant_info_table").jqGrid('getGridParam','selarrrow');
-        var rowData = $("#change_restaurant_info_table").jqGrid("getRowData", sels);
+        var sels = $("#change_dish_info_table").jqGrid('getGridParam','selarrrow');
+        var rowData = $("#change_dish_info_table").jqGrid("getRowData", sels);
         var sel = rowData.id;
         if(sels==""){
             alert("请选择要修改的项！");
@@ -83,9 +89,9 @@ $(function(){
             }else{
                 $("#popDialog").dialog({
                     open: function(event, ui) {
-                        $(this).load('/adm/change_restaurant_info/edit/'+sel);
+                        $(this).load('/res_adm/change_dish_info/edit/'+sel);
                     },
-                    title: '修改店铺信息'
+                    title: '修改菜品信息'
                 });
                 $("#popDialog").dialog("open");
                 return false;
@@ -93,7 +99,7 @@ $(function(){
         }
     });
     $("#del_btn").click(function(){
-        var sels = $("#change_restaurant_info_table").jqGrid('getGridParam','selarrrow');
+        var sels = $("#change_dish_info_table").jqGrid('getGridParam','selarrrow');
         var sel = "";
         if(sels==""){
             alert("请选择要删除的项！");
@@ -102,7 +108,7 @@ $(function(){
                 var arr = sels.toString().split(',');
                 $.each(arr,function(i,n){
                     if(arr[i]!=""){
-                        var rowData = $("#change_restaurant_info_table").jqGrid("getRowData", arr[i]);
+                        var rowData = $("#change_dish_info_table").jqGrid("getRowData", arr[i]);
                         if(i == 0){
                             sel = rowData.id;
                         }
@@ -113,7 +119,7 @@ $(function(){
                 });
                 $.ajax({
                     type: "delete",
-                    url: "/adm/change_restaurant_info/delete/"+sel,
+                    url: "/res_adm/change_dish_info/delete/"+sel,
                     //data: "_csrf=#{csrf}",
                     beforeSend: function() {
                         $().message("正在请求...");
@@ -125,7 +131,7 @@ $(function(){
                         if(200 == msg.status){
                             $.each(arr,function(i,n){
                                 if(arr[i]!=""){
-                                    $("#change_restaurant_info_table").jqGrid('delRowData',arr[i]);
+                                    $("#change_dish_info_table").jqGrid('delRowData',arr[i]);
                                     $().message("已成功删除!");
                                 }
                             });

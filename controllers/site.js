@@ -79,7 +79,7 @@ exports.headLine = function (req, res, next) {
                 headline += '<li><a href="http://localhost:8888/adm/change_restaurant_info">店铺信息管理</a></li>';
             }
             else if(user.member[k].role == 2) {
-                headline += '<li><a href="#">餐馆管理</a></li>';
+                headline += '<th><a href="http://localhost:8888/res_adm/change_dish_info">餐馆管理</a></th>';
             }
         }
         headline += '<li><a href="http://localhost:8888/signout">退出</a></li>';

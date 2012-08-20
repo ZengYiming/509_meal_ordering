@@ -119,7 +119,7 @@ Restaurant.prototype.create = function(body, cb) {
  * @param cb 回调
  */
 Restaurant.prototype.delete = function(ids, cb) {
-    var sql = " delete from restaurant where _id in(" + ids + ") ";
+    var sql = " delete from restaurant where id in(" + ids + ") ";
     mysql.query(sql, function(err, rs) {
         if(err) return cb(err);
         cb(err, rs);
