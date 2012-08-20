@@ -1,0 +1,31 @@
+script(type='text/javascript', src='/js/adm/edit_restaurant_info.js')
+.form-container
+    form#add_form
+        fieldset#goodsContent
+            legend(style='color: #C00; font-style: normal;') 店铺信息
+            div
+                label  编号：#{locals.id?id:''}
+            div
+                label.error   店铺名称：
+                input#name.allowInput(type='text', name='name')
+            div
+                label  电话：
+                input#tel.allowInput(type='text', name='tel')
+            div
+                label.error  地址：
+                input#address.allowInput(type='text', name='address',size='70')
+            div
+                label  简要介绍：
+                input#intro.allowInput(type='text', name='intro',size='100')
+            div
+                label.error  店铺图片：
+                img(src='#{restaurant_src}',name='restaurant', alt='restaurant', height=100, width=100)
+                input(id='upload',name='upload', type='file', multiple='multiple')
+        fieldset
+            legend
+            div
+                //input(type='hidden', name='_csrf', value='#{csrf}')
+                //input#_id(type='hidden', name='_id',value='#{locals._id?_id:''}')
+                //input#pageState(type='hidden', name='pageState', value='#{pageState}')
+                input#save.btn(type='button', value=' 保 存 ')
+                input#close.btn(type='button', value=' 关 闭 ', onclick='$("#popDialog").dialog("close");')

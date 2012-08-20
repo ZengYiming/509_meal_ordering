@@ -92,38 +92,47 @@ $(function(){
     });
     $("#del_btn").click(function(){
         var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        var sel = "";
         if(sels==""){
             alert("请选择要删除的项！");
         }else{
             if(confirm("您是否确认删除？")){
                 var arr = sels.toString().split(',');
                 $.each(arr,function(i,n){
-                    var rowData = $("#change_customer_info_table").jqGrid("getRowData", arr[i]);
-                    var sel = rowData.id;
-                    $.ajax({
-                        type: "delete",
-                        url: "/adm/change_customer_info/delete/"+sel,
-                        //data: "_csrf=#{csrf}",
-                        beforeSend: function() {
-                            $().message("正在请求...");
-                        },
-                        error:function(){
-                            $().message("请求失败...");
-                        },
-                        success: function(msg){
-                            if(200 == msg.status){
+                    if(arr[i]!=""){
+                        var rowData = $("#change_customer_info_table").jqGrid("getRowData", arr[i]);
+                        if(i == 0){
+                            sel = rowData.id;
+                        }
+                        else{
+                            sel = sel + ',' + rowData.id;
+                        }
+                    }
+                });
+                $.ajax({
+                    type: "delete",
+                    url: "/adm/change_customer_info/delete/"+sel,
+                    //data: "_csrf=#{csrf}",
+                    beforeSend: function() {
+                        $().message("正在请求...");
+                    },
+                    error:function(){
+                        $().message("请求失败...");
+                    },
+                    success: function(msg){
+                        if(200 == msg.status){
+                            $.each(arr,function(i,n){
                                 if(arr[i]!=""){
                                     $("#change_customer_info_table").jqGrid('delRowData',arr[i]);
+                                    $().message("已成功删除!");
                                 }
-                                $().message("已成功删除!");
-                            }else{
-                                $().message("操作失败！");
-                            }
+                            });
+                        }else{
+                            $().message("操作失败！");
                         }
-                    });
+                    }
                 });
             }
         }
     });
-
 });

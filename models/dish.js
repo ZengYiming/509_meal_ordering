@@ -34,7 +34,7 @@ Dish.prototype.findOne = function(opt, cb) {
         if(!rs.length) return cb(err);
         cb(err, rs[0]);
     });
-}
+};
 
 Dish.prototype.findAll = function (opt, cb) {
     var sql = " SELECT * FROM dish  "
@@ -46,6 +46,14 @@ Dish.prototype.findAll = function (opt, cb) {
         if(!rs.length) return cb(err);
         cb(err, rs);
     });
-}
+};
+Dish.prototype.count = function(opt, cb) {
+    var sql = "SELECT COUNT(*) AS count FROM dish where 1=1 "+opt.where;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+        cb(err, rs[0]);
+    });
+};
 
 exports = module.exports = createDish;
