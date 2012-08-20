@@ -87,7 +87,7 @@ exports.show = function(req, res, next, err) {
     for(var k in req.session.shopping_cart) {
         var value = req.session.shopping_cart[k];
 //        console.log('in shopping_cart, value: ' + sys.inspect(value));
-        content += '<tr><td>' + value.dish.name + '</td><td>' + value.dish.price + '</td><td>' + value.quantity + '</td><td>' + value.sum + '</td>' +
+        content += '<tr id="sc_row"><td>' + value.dish.name + '</td><td>' + value.dish.price + '</td><td>' + value.quantity + '</td><td>' + value.sum + '</td>' +
             '<td><a id="shopping_cart_del" name="'+ value.dish.id + '">删除</a></td></tr>';
     }
     content += '</table></li>' +

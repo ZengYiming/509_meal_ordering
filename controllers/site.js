@@ -17,18 +17,37 @@ var Dish = models.Dish;
 var url = require('url');
 
 exports.index = function(req, res, next){
-    Dish.findAll({where:''}, function(err, result) {
+    /*Dish.findAll({where:''}, function(err, result) {
         if(err) return next(err);
         res.render('index', {dishes: result});
         return;
-    });
-
-    /*Restaurant.findAll({}, function(err, result) {
-        if(err) return next(err);
-        res.render('index', {restaurants: result});
-        return;
     });*/
+    res.render('index');
 
+};
+
+exports.homepage = function(req, res, next) {
+    Restaurant.findAll({where: ''}, function(err, result) {
+        if(err) return next(err);
+        var rsLine = '';
+        for(var k in result) {
+            var restaurant = result[k];
+            rsLine += '<div class="grid">' +
+                '<div class="imgholder">' +
+                '<a href="#"><img src="' + restaurant.image + '" /></a>' +
+                '</div>' +
+                '<strong>' + restaurant.name + '</strong>' +
+                '<p>' + restaurant.intro + '</p>' +
+                '<div class="meta">' +
+                '   <p>地址：' + restaurant.address + '</p>' +
+                '   <p>电话：' + restaurant.tel + '</p>' +
+                '</div>' +
+                '</div>';
+        }
+        res.write(rsLine);
+        res.end();
+        return;
+    });
 };
 
 exports.dish_info = function(req, res, next) {
@@ -40,10 +59,10 @@ exports.dish_info = function(req, res, next) {
 };
 
 exports.headLine = function (req, res, next) {
-    var headline = '<li id="logo" class="logo">' +
+    var headline = '<li id="logo_head" class="logo">' +
         '<img style="float:left;" alt="" src="/image/headline/menu_left.png"/>' +
-        '<ul id="main">' +
-            '<li>Welcome to <b>509</b> tutorial!</li>' +
+        '<ul id="logo_sub">' +
+            '<li>Welcome to <b>509 meal-ordering-system!</b></li>' +
             '<li class="last">' +
                 '<img class="corner_left" alt="" src="/image/headline/corner_blue_left.png"/>' +
                 '<img class="middle" alt="" src="/image/headline/dot_blue.png"/>' +
@@ -51,7 +70,7 @@ exports.headLine = function (req, res, next) {
             '</li>' +
         '</ul>' +
         '</li>' +
-        '<li id="home_page"><a href="http://localhost:8888/">首页</a></li>';
+        '<li id="home_page"><a id="homepage">首页</a></li>';
     if(req.session.user) {
         var user = req.session.user;
         var member = user.member;

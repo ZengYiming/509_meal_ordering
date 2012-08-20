@@ -8,6 +8,7 @@
 
 $(document).ready(function() {
     setHeadLine();
+    show_homepage();
 
     $("#homeDialog").dialog({
         autoOpen: false,
@@ -24,139 +25,16 @@ $(document).ready(function() {
     });
 
     //logo
-    /*$('#logo').mouseenter(function() {
-        $('#main').slideToggle(0);
+    $('#logo_head').mouseenter(function() {
+        $('#logo_sub').slideToggle(0);
     });
-    $('#logo').mouseleave(function() {
-        $('#main').slideToggle(0);
-    });*/
+    $('#logo_head').mouseleave(function() {
+        $('#logo_sub').slideToggle(0);
+    });
 
     //user_info
     $('#user_info').mouseenter(function() {
-        $.ajax({
-            type:'get',
-            url: '/user/index',
-            dataType: 'html',
-            global: false,
-            async: false,
-            success: function(data) {
-                $('#user_info').html(data);
-                $('#user_info_sub').show();
-                $('#user_info').mouseleave(function() {
-                    $('#user_info_sub').hide();
-                });
-
-                $('#user_info_change').click(function() {
-                     $('#homeDialog').dialog({
-                         open: function(event, ui) {
-                            $(this).load('/user/change_info', function() {
-                                //avatar_upload
-                                var avatar = $('img#avatar');
-                                avatar.mouseover(function() {
-                                    avatar.css("border","2px dotted red");
-                                });
-                                avatar.mouseout(function() {
-                                    avatar.css("border","none");
-                                });
-                                avatar.click(function() {
-                                    $("#uploadinfo").css("visibility","hidden");
-                                    $("#uploadarea").css("visibility","visible");
-                                });
-
-                                var imageUpload = $('#imageUpload').interval;
-                                new AjaxUpload('avatarUpload', {
-                                    action: '/user/upload_avatar',
-                                    name: 'avatar',
-                                    autoSubmit: true,
-                                    responseType: 'json',
-                                    onSubmit: function(file, extension) {
-                                        //alert('onSubmit');
-                                        $('div.preview').addClass('loading');
-                                    },
-                                    onComplete: function(file, response) {
-                                        //alert('onComplete');
-                                        /*avatar.load(function(){
-                                            $('div.preview').removeClass('loading');
-                                            avatar.unbind();
-                                        });*/
-                                        //var r = JSON.parse(response);
-                                        avatar.attr('src', response.avatar_src);
-                                        $("span#uploadinfo").text(response.message);
-                                        $("span#uploadinfo").css("visibility","visible");
-                                        $("span#uploadarea").css("visibility","hidden");
-                                    }
-                                });
-
-
-                                //change_info
-                                $('#user_info_submit').click(function() {
-                                    var user_name = $('#user_name').val();
-                                    var user_tel = $('#user_tel').val();
-                                    var user_email = $('#user_email').val();
-                                    var info_json = {name: user_name, tel: user_tel, email: user_email};
-                                    $.ajax({
-                                        type: "post",
-                                        url:  "/user/change_info",
-                                        dataType: "json",
-                                        global: false,
-                                        async: false,
-                                        data: info_json,
-                                        success: function (data, textStatus) {
-                                            $().message("信息修改成功！");
-                                            $("#homeDialog").dialog("close");
-                                        },
-                                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                            var res = JSON.parse(XMLHttpRequest.responseText);
-                                            $('p#error').html(res.error);//有错
-                                        }
-                                    });
-                                });
-                            });
-                         },
-                         title: '更改用户信息'
-                     });
-                    $('#homeDialog').dialog('open');
-                    return false;
-                });
-
-                $('#user_info_psw').click(function() {
-                    $('#homeDialog').dialog({
-                        open: function(event, ui) {
-                            $(this).load('/user/change_psw', function() {
-                                $('#user_psw_submit').click(function() {
-                                    var change_old_pass = $('#change_old_pass').val();
-                                    var change_new_pass = $('#change_new_pass').val();
-                                    var change_re_pass = $('#change_re_pass').val();
-                                    var pass_json = {old_pass: change_old_pass, new_pass: change_new_pass, re_pass: change_re_pass};
-                                    $.ajax({
-                                        type: "post",
-                                        url:  "/user/change_psw",
-                                        dataType: "json",
-                                        global: false,
-                                        async: false,
-                                        data: pass_json,
-                                        success: function (data, textStatus) {
-                                            $().message("密码修改成功！");
-                                            $("#homeDialog").dialog("close");
-                                        },
-                                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                            var res = JSON.parse(XMLHttpRequest.responseText);
-                                            $('p#error').html(res.error);//有错
-                                        }
-                                    });
-                                });
-                            });
-                        },
-                        title: '重设密码'
-                    });
-                    $('#homeDialog').dialog('open');
-                    return false;
-                });
-            },
-            error: function() {
-                $().message('获取信息失败！');
-            }
-        });
+        show_user_info();
     });
 
 
@@ -172,27 +50,12 @@ $(document).ready(function() {
 
     //resadm
     $('#resadm').mouseenter(function() {
-        $.ajax({
-            type: "get",
-            url:  "/res_adm/get_res",
-            dataType: "html",
-            global: false,
-            async: true,
-            success: function (data, textStatus) {
-//                console.log("data:"+JSON.stringify(data));
-                $('#resadm').html(data);
-                $('#resadm_sub').show();
-                /*$('#resadm').mouseover(function() {
-                    $('#resadm_sub').show();
-                });*/
-                $('#resadm').mouseleave(function() {
-                    $('#resadm_sub').hide();
-                });
-            },
-            error: function () {
-                $().message("获取信息失败！");
-            }
-        });
+        show_resadm();
+    });
+
+    //homepage
+    $('#homepage').click(function() {
+        show_homepage();
     });
 
 });
@@ -214,6 +77,199 @@ function setHeadLine() {
     });
 }
 
+function show_homepage() {
+    $.ajax({
+        type: "get",
+        url:  "/homepage",
+        dataType: "html",
+        global: false,
+        async: true,
+        success: function (data, textStatus) {
+//                console.log("data:"+JSON.stringify(data));
+            $('#main_container').html(data);
+            $('#main_container').imagesLoaded(function() {
+                $('#main_container').BlocksIt({
+                    numOfCol: 5,
+                    offsetX: 8,
+                    offsetY: 8
+                });
+            });
+        },
+        error: function () {
+            $().message("获取信息失败！");
+        }
+    });
+}
+
+function show_resadm() {
+    $.ajax({
+        type: "get",
+        url:  "/res_adm/get_res",
+        dataType: "html",
+        global: false,
+        async: true,
+        success: function (data, textStatus) {
+//                console.log("data:"+JSON.stringify(data));
+            $('#resadm').html(data);
+            $('#resadm_sub').show();
+            /*$('#resadm').mouseover(function() {
+             $('#resadm_sub').show();
+             });*/
+            $('#resadm').mouseleave(function() {
+                $('#resadm_sub').hide();
+            });
+        },
+        error: function () {
+            $().message("获取信息失败！");
+        }
+    });
+}
+
+function show_user_info() {
+    $.ajax({
+        type:'get',
+        url: '/user/index',
+        dataType: 'html',
+        global: false,
+        async: false,
+        success: function(data) {
+            $('#user_info').html(data);
+            $('#user_info_sub').show();
+            $('#user_info').mouseleave(function() {
+                $('#user_info_sub').hide();
+            });
+
+            $('#user_info_change').click(function() {
+                $('#homeDialog').dialog({
+                    open: function(event, ui) {
+                        $(this).load('/user/change_info', function() {
+                            //avatar_upload
+                            var avatar = $('img#avatar');
+                            avatar.mouseover(function() {
+                                avatar.css("border","2px dotted red");
+                            });
+                            avatar.mouseout(function() {
+                                avatar.css("border","none");
+                            });
+                            avatar.click(function() {
+                                $("#uploadinfo").css("visibility","hidden");
+                                $("#uploadarea").css("visibility","visible");
+                            });
+
+                            var imageUpload = $('#imageUpload').interval;
+                            new AjaxUpload('avatarUpload', {
+                                action: '/user/upload_avatar',
+                                name: 'avatar',
+                                autoSubmit: true,
+                                responseType: 'json',
+                                onSubmit: function(file, extension) {
+                                    //alert('onSubmit');
+                                    $('div.preview').addClass('loading');
+                                },
+                                onComplete: function(file, response) {
+                                    //alert('onComplete');
+                                    /*avatar.load(function(){
+                                     $('div.preview').removeClass('loading');
+                                     avatar.unbind();
+                                     });*/
+                                    //var r = JSON.parse(response);
+                                    avatar.attr('src', response.avatar_src);
+                                    $("span#uploadinfo").text(response.message);
+                                    $("span#uploadinfo").css("visibility","visible");
+                                    $("span#uploadarea").css("visibility","hidden");
+                                }
+                            });
+
+
+                            //change_info
+                            $('#user_info_submit').click(function() {
+                                var user_name = $('#user_name').val();
+                                var user_tel = $('#user_tel').val();
+                                var user_email = $('#user_email').val();
+                                var info_json = {name: user_name, tel: user_tel, email: user_email};
+                                $.ajax({
+                                    type: "post",
+                                    url:  "/user/change_info",
+                                    dataType: "json",
+                                    global: false,
+                                    async: false,
+                                    data: info_json,
+                                    success: function (data, textStatus) {
+                                        $().message("信息修改成功！");
+                                        $("#homeDialog").dialog("close");
+                                    },
+                                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                        var res = JSON.parse(XMLHttpRequest.responseText);
+                                        $('p#error').html(res.error);//有错
+                                    }
+                                });
+                            });
+                        });
+                    },
+                    title: '更改用户信息'
+                });
+                $('#homeDialog').dialog('open');
+                return false;
+            });
+
+            $('#user_info_psw').click(function() {
+                $('#homeDialog').dialog({
+                    open: function(event, ui) {
+                        $(this).load('/user/change_psw', function() {
+                            $('#user_psw_submit').click(function() {
+                                var change_old_pass = $('#change_old_pass').val();
+                                var change_new_pass = $('#change_new_pass').val();
+                                var change_re_pass = $('#change_re_pass').val();
+                                var pass_json = {old_pass: change_old_pass, new_pass: change_new_pass, re_pass: change_re_pass};
+                                $.ajax({
+                                    type: "post",
+                                    url:  "/user/change_psw",
+                                    dataType: "json",
+                                    global: false,
+                                    async: false,
+                                    data: pass_json,
+                                    success: function (data, textStatus) {
+                                        $().message("密码修改成功！");
+                                        $("#homeDialog").dialog("close");
+                                    },
+                                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                        var res = JSON.parse(XMLHttpRequest.responseText);
+                                        $('p#error').html(res.error);//有错
+                                    }
+                                });
+                            });
+                        });
+                    },
+                    title: '重设密码'
+                });
+                $('#homeDialog').dialog('open');
+                return false;
+            });
+        },
+        error: function() {
+            $().message('获取信息失败！');
+        }
+    });
+}
+
+/*function show_cart() {
+    $.ajax({
+        type:'get',
+        url: '/customer/shopping_cart',
+        dataType: 'html',
+        global: false,
+        async: true,
+        success: function (data, textStatus) {
+//                console.log("data:"+JSON.stringify(data));
+            $('#shopping_cart').html(data);
+            $('#shopping_cart_sub').show();
+        },
+        error: function () {
+            $().message("获取信息失败！");
+        }
+    });
+}*/
+
 function show_shopping_cart() {
     $.ajax({
         type:'get',
@@ -227,7 +283,6 @@ function show_shopping_cart() {
             $('#shopping_cart').mouseleave(function() {
                 $('#shopping_cart_sub').hide();
             });
-
             $('a#shopping_cart_del').click(function() {
                 var dish_id = $(this).attr('name');
                 $.ajax({
@@ -237,7 +292,11 @@ function show_shopping_cart() {
                     global: false,
                     async: false,
                     success: function() {
+                        //$('#sc_table').hide();
+                        //$(this).parents('#sc_talbe').hide();
+                        //$('#shopping_cart_sub').hide();
                         show_shopping_cart();
+                        //show_cart();
                     },
                     error: function() {
                         $().message('获取信息失败！');
