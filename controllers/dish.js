@@ -152,15 +152,16 @@ exports.addDish = function(req, res, next){
     var name = req.body.name;
     var price = req.body.price;
     var intro = req.body.intro;
-    //var image = req.body.image;
+    var res_id = req.body.res_id;
+    var image = req.body.image;
 
     try {
         check(name, "保存失败，名称不能为空！").notNull();
         check(price, "保存失败，价格不能为空！").notNull();
         check(intro, "保存失败，简要介绍不能为空！").notNull();
-
+        check(res_id, "保存失败，餐馆id不能为空！").notNull();
         //创建时间
-        Dish.create({name:name, price:price, intro:intro}, function(err,info){
+        Dish.create({name:name, price:price, intro:intro,restaurant_id:res_id,image:image}, function(err,info){
             if(err) return next(err);
 
             //res.json({status:200, error:'更新商品信息成功!'}, 200);
@@ -170,4 +171,109 @@ exports.addDish = function(req, res, next){
     }catch(e){
         res.json({status:400, error:e.message}, 400);
     }
+};
+exports.deleteDish = function(req, res, next){
+    var res_ids = req.params.res_ids;
+    console.log("开始进行删除dish。。。。res_ids="+res_ids);
+
+    try {
+        check(res_ids, "删除失败，编号不能为空！").notNull();
+
+        Dish.delete(res_ids, function(err,ds){
+            if(err) return next(err);
+            return res.json({"status":200, "error":'删除店铺信息成功!'}, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.dishpageEdit = function(req, res, next){
+    var id = req.params.id;
+    console.log("开始 dishpageEdit 。。。id="+id);
+    try {
+        Dish.findOne({id:id}, function(err,rs){
+            if(err) return next(err);
+            var img = rs.image || '/image/dish/default_dish.gif';
+            //var restaurant_src = '/image/restaurant/' + img;
+            check(id, "流水号不能为空！").notNull();
+            res.render('res_adm/edit_dish_info', { layout: false, id:id,dish_src: img});
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.updateDish = function(req, res, next){
+    console.log("update dish。。。");
+    //开始校验输入数值的正确性
+    var id = req.body.id;
+    var name = req.body.name;
+    var price = req.body.price;
+    var intro = req.body.intro;
+    var res_id = req.body.res_id;
+    var image = req.body.image;
+
+    try {
+        check(id, "保存失败，编号不能为空！").notNull();
+        check(name, "保存失败，名称不能为空！").notNull();
+        check(price, "保存失败，价格不能为空！").notNull();
+        check(intro, "保存失败，简要介绍不能为空！").notNull();
+        check(res_id, "保存失败，餐馆id不能为空！").notNull();
+        //创建时间
+        Dish.update({id:id,name:name, price:price, intro:intro,restaurant_id:res_id,image:image}, function(err,info){
+            if(err) return next(err);
+
+            //res.json({status:200, error:'更新商品信息成功!'}, 200);
+            var jsonObj = {dish:{id:info.insertId}};
+            return res.json(jsonObj, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.upload_dish = function(req, res, next){
+    var ep = EventProxy.create();
+    var form = new formidable.IncomingForm();
+    //var id=req.params.id;
+    var image;
+   // console.log('in dish.js  upload_dish id='+id);
+
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('done', function(dish_src) {
+        //res.redirect('/customer/change_info');
+        //console.log(restaurant_src);
+        var rsJson = {dish_src: dish_src, message: '店铺图片更新成功，点击保存退出！'};
+        res.json(rsJson, 201);
+    });
+
+
+    form.uploadDir = path.join(__dirname, '../public/image/dish/');
+    form.encoding='utf-8';
+    form.maxFieldsSize=20*1024*1024;
+    form.keepExtensions=false;
+
+    form.parse(req, function(error, fields, files) {
+        //console.log('in if condition'+sys.inspect({fields: fields, files: files}));
+        if(error) throw error;
+        //var user = req.session.user;
+        var dish_src = files.dish.path + ".gif";
+        if(files.dish.size !== 0) {
+            image = '/image/dish/' + path.basename(dish_src);
+            fs.renameSync(files.dish.path, dish_src);
+//            Dish.update({id: id, image: image}, function(err, info) {
+//                if(err) next(err);
+//                if(info) {
+//                    //console.log("info: " + sys.inspect(info));
+//                    //console.log('succ');
+//                    ep.trigger('done',image);
+//                }
+//            });
+            ep.trigger('done',image);
+        }else {
+            //image = user.image;
+            ep.trigger('done',image);
+        }
+    });
 };

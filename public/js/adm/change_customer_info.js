@@ -97,7 +97,7 @@ $(function(){
 
                             var imageUpload = $('#imageUpload').interval;
                             new AjaxUpload('avatarUpload', {
-                                action: '/adm/change_customer_info/upload_avatar/'+sel,
+                                action: '/adm/change_customer_info/upload_avatar',
                                 name: 'avatar',
                                 autoSubmit: true,
                                 responseType: 'json',
@@ -113,6 +113,7 @@ $(function(){
                                      });*/
                                     //var r = JSON.parse(response);
                                     avatar.attr('src', response.avatar_src);
+                                    $("#img_src").val(response.avatar_src);
                                     $("span#uploadinfo").text(response.message);
                                     $("span#uploadinfo").css("visibility","visible");
                                     $("span#uploadarea").css("visibility","hidden");
@@ -169,6 +170,31 @@ $(function(){
                         }
                     }
                 });
+            }
+        }
+    });
+    $("#authority_btn").click(function(){
+        var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
+        var sel = rowData.id;
+        if(sels==""){
+            alert("请选择要修改的项！");
+        }else{
+            if(sels.toString().indexOf(',') > 0){
+                alert("只可选择一项进行修改！");
+            }else{
+                if(sel == '101'){
+                    alert("不可以修改系统管理员admin的权限！");
+                    return;
+                }
+                $("#popDialog").dialog({
+                    open: function(event, ui) {
+                        $(this).load('/adm/change_customer_info/authority/'+sel);
+                    },
+                    title: '添加店铺权限'
+                });
+                $("#popDialog").dialog("open");
+                return false;
             }
         }
     });

@@ -52,6 +52,32 @@ Member.prototype.findOne_bak = function(opt, cb) {
 
 
 };
+Member.prototype.findOne = function(opt, cb) {
+
+    where = "";
+    for(var k in opt) {
+        var value = opt[k];
+        if(typeof value != 'object' && typeof value != 'array') {
+            /* if(k && k == "loginname") k = "cellphone";
+             //where += " AND " + k + " LIKE  '" + value + "'";
+             if( typeof value == 'number') {*/
+            where += " AND " + k + " = '" + value + "'";
+            /*  }
+             else {
+             where += " AND " + k + " LIKE  '" + value + "'";
+             }*/
+        }
+    }
+
+    //var sql = "SELECT * FROM `user` WHERE `cellphone` LIKE '"+opt.loginname+"'";
+    var sql = "SELECT * FROM `member` WHERE 1=1 "+where;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+//        console.log("rs: " + sys.inspect(rs[0]));
+        cb(err, rs[0]);
+    });
+};
 
 Member.prototype.findByUserId = function(opt, cb) {
     /*
@@ -154,7 +180,16 @@ Member.prototype.delete = function(ids, cb) {
         cb(err, rs);
     });
 };
-
+Member.prototype.delete1 = function(opt, cb) {
+    var sql = " delete from member where  1=1";
+    if(opt.role) sql += " and role = "+ opt.role;
+    if(opt.user_id) sql += " and user_id = "+ opt.user_id;
+    if(opt.restaurant_id) sql += " and restaurant_id = "+ opt.restaurant_id;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        cb(err, rs);
+    });
+};
 /**
  * 更新
  * @param body 前台传入的页面提交数据对象

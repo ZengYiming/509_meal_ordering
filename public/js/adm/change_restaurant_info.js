@@ -64,7 +64,45 @@ $(function(){
     $("#add_btn").click(function(){
         $("#popDialog").dialog({
             open: function(event, ui) {
-                $(this).load('/adm/change_restaurant_info/add');
+                $(this).load('/adm/change_restaurant_info/add',function() {
+                    //restaurant_upload
+                    var restaurant = $('img#restaurant');
+                    restaurant.mouseover(function() {
+                        restaurant.css("border","2px dotted red");
+                    });
+                    restaurant.mouseout(function() {
+                        restaurant.css("border","none");
+                    });
+                    restaurant.click(function() {
+                        $("#uploadinfo").css("visibility","hidden");
+                        $("#uploadarea").css("visibility","visible");
+                    });
+
+                    var imageUpload = $('#imageUpload').interval;
+                    new AjaxUpload('restaurantUpload', {
+                        action: '/adm/change_customer_info/upload_restaurant',
+                        name: 'restaurant',
+                        autoSubmit: true,
+                        responseType: 'json',
+                        onSubmit: function(file, extension) {
+                            //alert('onSubmit');
+                            $('div.preview').addClass('loading');
+                        },
+                        onComplete: function(file, response) {
+                            //alert('onComplete');
+                            /*avatar.load(function(){
+                             $('div.preview').removeClass('loading');
+                             avatar.unbind();
+                             });*/
+                            //var r = JSON.parse(response);
+                            restaurant.attr('src', response.restaurant_src);
+                            $("#img_src").val(response.restaurant_src);
+                            $("span#uploadinfo").text(response.message);
+                            $("span#uploadinfo").css("visibility","visible");
+                            $("span#uploadarea").css("visibility","hidden");
+                        }
+                    });
+                });
             },
             title: '添加新店铺'
         });
@@ -99,7 +137,7 @@ $(function(){
 
                             var imageUpload = $('#imageUpload').interval;
                             new AjaxUpload('restaurantUpload', {
-                                action: '/adm/change_customer_info/upload_restaurant/'+sel,
+                                action: '/adm/change_customer_info/upload_restaurant',
                                 name: 'restaurant',
                                 autoSubmit: true,
                                 responseType: 'json',
@@ -115,6 +153,7 @@ $(function(){
                                      });*/
                                     //var r = JSON.parse(response);
                                     restaurant.attr('src', response.restaurant_src);
+                                    $("#img_src").val(response.restaurant_src);
                                     $("span#uploadinfo").text(response.message);
                                     $("span#uploadinfo").css("visibility","visible");
                                     $("span#uploadarea").css("visibility","hidden");

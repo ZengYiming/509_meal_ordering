@@ -27,9 +27,9 @@ $(function(){
         var tel = $("#tel").val();
         var address = $("#address").val();
         var intro = $("#intro").val();
-        //var image = $("#upload").val();
+        var image = $("#img_src").val();
 
-        var restaurant_json = {name:name, tel:tel, address:address, intro:intro};
+        var restaurant_json = {name:name, tel:tel, address:address, intro:intro,image:image};
 
         console.log("add_restaurant_json:"+JSON.stringify(restaurant_json));
 

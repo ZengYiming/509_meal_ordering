@@ -15,6 +15,7 @@
 var models = require('../models');
 var User = models.User;
 var Restaurant = models.Restaurant;
+var Member = models.Member;
 var EventProxy = require('eventproxy').EventProxy;
 
 var check = require('validator').check;
@@ -114,7 +115,7 @@ exports.findallusers = function(req, res, next){
             for(var i=0; i<rs.length; i++){
                 // 定义rows
                 var rows = new Object();
-                rows.id = rs[i]._id;
+                rows.id = rs[i].id;
                 //rows.cell = rs[i];
                 var ay = new Array();
                 for(key in rs[i]){
@@ -199,13 +200,14 @@ exports.upload_avatar = function(req, res, next) {
         if(files.avatar.size !== 0) {
             image = '/image/avatar/' + path.basename(avatar_src);
             fs.renameSync(files.avatar.path, avatar_src);
-            User.update({id: id, image: image}, function(err, info) {
-                if(err) next(err);
-                if(info) {
-                    //console.log("info: " + sys.inspect(info));
-                    ep.trigger('update');
-                }
-            });
+//            User.update({id: id, image: image}, function(err, info) {
+//                if(err) next(err);
+//                if(info) {
+//                    //console.log("info: " + sys.inspect(info));
+//                    ep.trigger('update');
+//                }
+//            });
+            ep.trigger('update');
         }else {
             //image = user.image;
             ep.trigger('update');
@@ -233,7 +235,7 @@ exports.updateUser = function(req, res, next) {
     var name = req.body.name;
     var tel = req.body.tel;
     var email = req.body.email;
-    //var image = req.body.image;
+    var image = req.body.image;
     //console.log(image);
     try {
         check(id, "保存失败，编号不能为空！").notNull();
@@ -243,7 +245,7 @@ exports.updateUser = function(req, res, next) {
         check(tel, "保存失败，电话不能为空！").notNull();
         check(email, "保存失败，电子邮件不正确！").isEmail();
         //说明是更新数据
-        User.update({id:id, username:username, password:password, name:name, tel:tel, email:email}, function(err,info){
+        User.update({id:id, username:username, password:password, name:name, tel:tel, email:email,image:image}, function(err,info){
             if(err) return next(err);
 
             //res.json({status:200, error:'更新商品信息成功!'}, 200);
@@ -271,7 +273,156 @@ exports.deleteUser = function(req, res, next) {
         res.json({status:400, error:e.message}, 400);
     }
 };
+exports.authority_customer = function(req, res, next){
+    var id= req.params.id;
+    res.render('adm/authority_customer_info',{layout:false,id:id});
+};
+exports.authority_customer_delete = function(req, res, next){
+    var id= req.params.id;
+    res.render('adm/authority_customer_info_delete',{layout:false,id:id});
+};
+exports.findallauthority = function(req, res, next){
+    var cus_id= req.params.id;
 
+    var page = req.query.page;//起始行数 for jqgrid
+    var start = req.query.start;//起始行数
+    var limit = req.query.limit;//每页显示行数
+    var bt = req.query.bt;//交易发生时间起点
+    var et = req.query.et;//交易发生截至时间
+    var sidx = req.query.sidx;//排序字段名
+    var sord = req.query.sord;//排序方式
+    var type_id = req.query.type_id;//商品类型ID
+    var ep = EventProxy.create();
+
+    //根据前台页面传入的查询条件，开始拼接where语句
+    var where = ' ';
+
+    function feedback(result) {
+        if(200 == result.status) {
+            if(result.jsonObj) {
+//                var jsonStr = JSON.stringify(result.jsonObj);
+//                console.log('jsonStr:'+jsonStr);
+                return res.json(result.jsonObj, result.status);
+            }else{
+                ep.trigger('error', {status:204, error:'查询结果为空!'});
+            }
+        }
+        else {
+            return res.json(result, result.status);
+        }
+    };
+
+    //当有异常发生时触发
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('findAllForWeb', function(where, count) {
+        findAllForWeb(where, count);
+    });
+    Restaurant.count({where:where, bt:bt, et:et}, function(err, count) {
+        if(err) { ep.unbind(); return next(err);}
+        if (!count && !count.count) return ep.trigger('error', {status:204, error:'查询结果为空!'});
+        ep.trigger('findAllForWeb', where, count.count);
+    });
+
+    function findAllForWeb(where, count) {
+        var showElement = ['id', 'name'];
+
+        if (!count && !count.count) return ep.trigger('error', {status:204, error:'查询结果为空!'});
+
+        if(!sidx){
+            sidx = 1;
+        }
+
+        // 查询结果总页数
+        var total_pages = 0;
+
+        // 计算查询结果页数
+        if(count > 0 && limit > 0){
+            total_pages = Math.ceil(count/limit);
+        }
+
+        // 若请求页大于总页数，设置请求页为最后一页
+        if (page > total_pages) page = total_pages;
+
+        // 计算起始行
+        var start = limit * page - limit;
+        // 若起始行为0
+        if(start < 0) start = 0;
+
+        Restaurant.findAll({where:where, start:start, limit:limit, sidx:sidx, sord:sord, bt:bt, et:et}, function(err, rs) {
+            if(err) { ep.unbind(); return next(err);}
+            if (!rs || rs == undefined) return ep.trigger('error', {status:204, error:'查询结果为空！'});
+            //开始汇总
+            var jsonObj = new Object();
+
+            jsonObj.page = page;  // 当前页
+            jsonObj.total = total_pages;    // 总页数
+            jsonObj.records = count;  // 总记录数
+
+            //定义rows 数组，保存所有rows数据
+            var rowsArray = new Array();
+            for(var i=0; i<rs.length; i++){
+                // 定义rows
+                var rows = new Object();
+                rows.id = rs[i].id;
+                //rows.cell = rs[i];
+                var ay = new Array();
+                for(key in rs[i]){
+                    var index = showElement.indexOf(key);
+                    if(index >= 0){
+                        ay[index] = rs[i][key];
+                    }
+                }
+                rows.cell = ay;
+                rowsArray[i] = rows;
+            }
+            //将rows数组赋予jsonObj.rows
+            jsonObj.rows = rowsArray;
+//            for(var i=0; i<rs.length;i++){
+//                Member.findOne({user_id:_id,restaurant_id:rs[i]},function(err,info){
+//
+//                });
+//            }
+
+            var jsonStr = JSON.stringify(jsonObj);
+            console.log('jsonStr-restaurants:'+jsonStr);
+            return res.json(jsonObj, 200);
+
+        });
+    };
+};
+exports.addauthority = function(req, res, next){
+    var cus_id = req.query.cus_id;
+    var res_id = req.query.res_id;
+//    console.log(cus_id);
+//    console.log(res_id);
+    Member.create({role:2,user_id:cus_id,restaurant_id:res_id},function(err,info){
+        if(err) return next(err);
+
+        //res.json({status:200, error:'更新商品信息成功!'}, 200);
+        var jsonObj = {member:{id:info.insertId}};
+       // console.log(jsonObj);
+        return res.json(jsonObj, 200);
+    });
+
+};
+exports.deleteauthority = function(req, res, next){
+    var cus_id = req.query.cus_id;
+    var res_id = req.query.res_id;
+//    console.log(cus_id);
+//    console.log(res_id);
+    Member.delete1({role:2,user_id:cus_id,restaurant_id:res_id},function(err,info){
+        if(err) return next(err);
+
+        //res.json({status:200, error:'更新商品信息成功!'}, 200);
+        var jsonObj = {member:{id:info.insertId}};
+        //console.log(jsonObj);
+        return res.json(jsonObj, 200);
+    });
+
+};
 
 
 exports.change_restaurant_info = function(req, res, next){
@@ -363,7 +514,7 @@ exports.findallrestaurants = function(req, res, next){
             for(var i=0; i<rs.length; i++){
                 // 定义rows
                 var rows = new Object();
-                rows.id = rs[i]._id;
+                rows.id = rs[i].id;
                 //rows.cell = rs[i];
                 var ay = new Array();
                 for(key in rs[i]){
@@ -432,14 +583,15 @@ exports.upload_restaurant = function(req, res, next) {
         if(files.restaurant.size !== 0) {
             image = '/image/restaurant/' + path.basename(restaurant_src);
             fs.renameSync(files.restaurant.path, restaurant_src);
-            Restaurant.update({id: id, image: image}, function(err, info) {
-                if(err) next(err);
-                if(info) {
-                    //console.log("info: " + sys.inspect(info));
-                    console.log('succ');
-                    ep.trigger('done',image);
-                }
-            });
+//            Restaurant.update({id: id, image: image}, function(err, info) {
+//                if(err) next(err);
+//                if(info) {
+//                    //console.log("info: " + sys.inspect(info));
+//                    console.log('succ');
+//                    ep.trigger('done',image);
+//                }
+//            });
+            ep.trigger('done',image);
         }else {
             //image = user.image;
             ep.trigger('update',image);
@@ -454,7 +606,7 @@ exports.updateRestaurant = function(req, res, next) {
     var tel = req.body.tel;
     var address = req.body.address;
     var intro = req.body.intro;
-    //var image = req.body.image;
+    var image = req.body.image;
     //console.log(image);
     try {
         check(id, "保存失败，编号不能为空！").notNull();
@@ -463,7 +615,7 @@ exports.updateRestaurant = function(req, res, next) {
         check(address, "保存失败，地址不能为空！").notNull();
         check(intro, "保存失败，简要介绍不能为空！").notNull();
         //说明是更新数据
-        Restaurant.update({id:id, name:name, tel:tel, address:address, intro:intro}, function(err,info){
+        Restaurant.update({id:id, name:name, tel:tel, address:address, intro:intro,image:image}, function(err,info){
             if(err) return next(err);
 
             //res.json({status:200, error:'更新商品信息成功!'}, 200);
@@ -509,7 +661,7 @@ exports.addRestaurant= function(req, res, next) {
     var tel = req.body.tel;
     var address = req.body.address;
     var intro = req.body.intro;
-    //var image = req.body.image;
+    var image = req.body.image;
 
     try {
         check(name, "保存失败，名称不能为空！").notNull();
@@ -518,7 +670,7 @@ exports.addRestaurant= function(req, res, next) {
         check(intro, "保存失败，简要介绍不能为空！").notNull();
 
         //创建时间
-        Restaurant.create({name:name, tel:tel, address:address, intro:intro}, function(err,info){
+        Restaurant.create({name:name, tel:tel, address:address, intro:intro,image:image}, function(err,info){
             if(err) return next(err);
 
             //res.json({status:200, error:'更新商品信息成功!'}, 200);

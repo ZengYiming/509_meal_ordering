@@ -19,9 +19,10 @@ $(function(){
         var name = $("#name").val();
         var price = $("#price").val();
         var intro = $("#intro").val();
-        //var image = $("#upload").val();
+        var res_id = $("#res_id").val();
+        var image = $("#img_src").val();
 
-        var dish_json = {name:name, price:price, intro:intro};
+        var dish_json = {name:name, price:price, intro:intro, res_id:res_id,image:image};
 
         console.log("add_dish_json:"+JSON.stringify(dish_json));
 

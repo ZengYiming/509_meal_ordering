@@ -66,5 +66,22 @@ Dish.prototype.create = function(body, cb) {
         return cb(err, info);
     });
 };
+Dish.prototype.delete = function(ids, cb) {
+    var sql = " delete from dish where id in(" + ids + ") ";
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        cb(err, rs);
+    });
+};
+Dish.prototype.update = function(body, cb) {
+    var opt = {
+        table: 'dish',
+        fields: body
+    };
+    mysql.update(opt, function(err, info) {
+        if(err) return next(err);
+        return cb(err, info);
+    });
+};
 
 exports = module.exports = createDish;

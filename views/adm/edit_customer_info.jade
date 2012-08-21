@@ -34,5 +34,6 @@ p
                 //input(type='hidden', name='_csrf', value='#{csrf}')
                 //input#_id(type='hidden', name='_id',value='#{locals._id?_id:''}')
                 //input#pageState(type='hidden', name='pageState', value='#{pageState}')
+                input#img_src(type='hidden', name='img_src',value='#{avatar_src}')
                 input#save.btn(type='button', value=' 保 存 ')
                 input#close.btn(type='button', value=' 关 闭 ', onclick='$("#popDialog").dialog("close");')

@@ -1,4 +1,12 @@
 script(type='text/javascript', src='/js/adm/add_restaurant_info.js')
+p
+    h4 上传店铺图片:
+p
+    div.preview
+        img(src='#{restaurant_src}',id='restaurant', name='restaurant', alt='restaurant', height=100, width=100)
+    span#uploadinfo 点击图片上传店铺图片
+    div#uploadarea(style="visibility:hidden")
+        input#restaurantUpload(type="button", value="上传店铺图片")
 .form-container
     form#add_form
         fieldset#goodsContent
@@ -21,5 +29,6 @@ script(type='text/javascript', src='/js/adm/add_restaurant_info.js')
                 //input(type='hidden', name='_csrf', value='#{csrf}')
                 //input#_id(type='hidden', name='_id',value='#{locals._id?_id:''}')
                 //input#pageState(type='hidden', name='pageState', value='#{pageState}')
+                input#img_src(type='hidden', name='img_src',value='#{restaurant_src}')
                 input#save.btn(type='button', value=' 保 存 ')
                 input#close.btn(type='button', value=' 关 闭 ', onclick='$("#popDialog").dialog("close");')

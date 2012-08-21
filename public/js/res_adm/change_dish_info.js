@@ -72,7 +72,45 @@ $(function(){
     $("#add_btn").click(function(){
         $("#popDialog").dialog({
             open: function(event, ui) {
-                $(this).load('/res_adm/change_dish_info/add');
+                $(this).load('/res_adm/change_dish_info/add',function() {
+                    //dish_upload
+                    var dish = $('img#dish');
+                    dish.mouseover(function() {
+                        dish.css("border","2px dotted red");
+                    });
+                    dish.mouseout(function() {
+                        dish.css("border","none");
+                    });
+                    dish.click(function() {
+                        $("#uploadinfo").css("visibility","hidden");
+                        $("#uploadarea").css("visibility","visible");
+                    });
+
+                    var imageUpload = $('#imageUpload').interval;
+                    new AjaxUpload('dishUpload', {
+                        action: '/res_adm/change_dish_info/upload_dish',
+                        name: 'dish',
+                        autoSubmit: true,
+                        responseType: 'json',
+                        onSubmit: function(file, extension) {
+                            //alert('onSubmit');
+                            $('div.preview').addClass('loading');
+                        },
+                        onComplete: function(file, response) {
+                            //alert('onComplete');
+                            /*avatar.load(function(){
+                             $('div.preview').removeClass('loading');
+                             avatar.unbind();
+                             });*/
+                            //var r = JSON.parse(response);
+                            dish.attr('src', response.dish_src);
+                            $("#img_src").val(response.dish_src);
+                            $("span#uploadinfo").text(response.message);
+                            $("span#uploadinfo").css("visibility","visible");
+                            $("span#uploadarea").css("visibility","hidden");
+                        }
+                    });
+                });
             },
             title: '添加新菜品'
         });
@@ -91,7 +129,45 @@ $(function(){
             }else{
                 $("#popDialog").dialog({
                     open: function(event, ui) {
-                        $(this).load('/res_adm/change_dish_info/edit/'+sel);
+                        $(this).load('/res_adm/change_dish_info/edit/'+sel,function() {
+                            //dish_upload
+                            var dish = $('img#dish');
+                            dish.mouseover(function() {
+                                dish.css("border","2px dotted red");
+                            });
+                            dish.mouseout(function() {
+                                dish.css("border","none");
+                            });
+                            dish.click(function() {
+                                $("#uploadinfo").css("visibility","hidden");
+                                $("#uploadarea").css("visibility","visible");
+                            });
+
+                            var imageUpload = $('#imageUpload').interval;
+                            new AjaxUpload('dishUpload', {
+                                action: '/res_adm/change_dish_info/upload_dish',
+                                name: 'dish',
+                                autoSubmit: true,
+                                responseType: 'json',
+                                onSubmit: function(file, extension) {
+                                    //alert('onSubmit');
+                                    $('div.preview').addClass('loading');
+                                },
+                                onComplete: function(file, response) {
+                                    //alert('onComplete');
+                                    /*avatar.load(function(){
+                                     $('div.preview').removeClass('loading');
+                                     avatar.unbind();
+                                     });*/
+                                    //var r = JSON.parse(response);
+                                    dish.attr('src', response.dish_src);
+                                    $("#img_src").val(response.dish_src);
+                                    $("span#uploadinfo").text(response.message);
+                                    $("span#uploadinfo").css("visibility","visible");
+                                    $("span#uploadarea").css("visibility","hidden");
+                                }
+                            });
+                        });
                     },
                     title: '修改菜品信息'
                 });
