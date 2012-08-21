@@ -34,7 +34,7 @@ Dish.prototype.findOne = function(opt, cb) {
         if(!rs.length) return cb(err);
         cb(err, rs[0]);
     });
-}
+};
 
 Dish.prototype.findAll = function (opt, cb) {
     var sql = " SELECT * FROM dish  "
@@ -46,6 +46,42 @@ Dish.prototype.findAll = function (opt, cb) {
         if(!rs.length) return cb(err);
         cb(err, rs);
     });
-}
+};
+Dish.prototype.count = function(opt, cb) {
+    var sql = "SELECT COUNT(*) AS count FROM dish where 1=1 "+opt.where;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+        cb(err, rs[0]);
+    });
+};
+
+Dish.prototype.create = function(body, cb) {
+    var opt = {
+        table: 'dish',
+        fields: body
+    };
+    mysql.insert(opt, function(err, info) {
+        if(err) return cb(err);
+        return cb(err, info);
+    });
+};
+Dish.prototype.delete = function(ids, cb) {
+    var sql = " delete from dish where id in(" + ids + ") ";
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        cb(err, rs);
+    });
+};
+Dish.prototype.update = function(body, cb) {
+    var opt = {
+        table: 'dish',
+        fields: body
+    };
+    mysql.update(opt, function(err, info) {
+        if(err) return next(err);
+        return cb(err, info);
+    });
+};
 
 exports = module.exports = createDish;

@@ -46,7 +46,7 @@ exports.get_res = function(req, res, next) {
                 var value = rs[k];
                 Restaurant.findOne({id: value.restaurant_id}, function(err, res) {
                     if(err) return next(err);
-                    rsLine += '<li><a href="/res_adm/change_dish_info/'+ res.id + '">' + res.name + '</a></li>';
+                    rsLine += '<li><a href="/res_adm/choose_restaurant/'+ res.id + '">' + res.name + '</a></li>';
                     ep.trigger('getRes');
                 });
             }

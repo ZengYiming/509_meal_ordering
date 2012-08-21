@@ -16,6 +16,7 @@ var shopping_cart = require("./controllers/shopping_cart");
 var adm = require("./controllers/adm");
 var order = require("./controllers/order");
 var resadm = require("./controllers/resadm");
+var dish = require("./controllers/dish");
 
 function auth(req, res, next) {
     if(req.session.user) {
@@ -93,13 +94,32 @@ exprots = module.exports = function(app) {
     //adm
     app.get('/adm/change_customer_info',authToAdm,adm.change_customer_info);
     app.get('/adm/change_customer_info/findall',authToAdm,adm.findallusers);
-    app.get('/adm/change_customer_info/edit/:id',authToAdm,adm.pageEdit);
+    app.get('/adm/change_customer_info/edit/:id',authToAdm,adm.userpageEdit);
     app.post('/adm/edit_customer_info/update',authToAdm,adm.updateUser);
     app.delete('/adm/change_customer_info/delete/:ids',authToAdm,adm.deleteUser);
-
+    app.post('/adm/change_customer_info/upload_avatar',authToAdm,adm.upload_avatar);
+    app.get('/adm/change_customer_info/authority/:id',authToAdm,adm.authority_customer);
+    app.get('/adm/authority_customer_info/findall/:id',authToAdm,adm.findallauthority);
+    app.get('/adm/authority_customer_info/add',authToAdm,adm.addauthority);
+    app.get('/adm/authority_customer_info/delete',authToAdm,adm.deleteauthority);
+    //adm restaurant
     app.get('/adm/change_restaurant_info',authToAdm,adm.change_restaurant_info);
     app.get('/adm/change_restaurant_info/findall',authToAdm,adm.findallrestaurants);
-
-    app.get('/res_adm/get_res', authToRes_adm, resadm.get_res);
+    app.get('/adm/change_restaurant_info/edit/:id',authToAdm,adm.restaurantpageEdit);
+    app.post('/adm/edit_restaurant_info/update',authToAdm,adm.updateRestaurant);
+    app.delete('/adm/change_restaurant_info/delete/:ids', authToAdm,adm.deleteRestaurant);
+    app.get('/adm/change_restaurant_info/add',authToAdm,adm.addpageRestaurant);
+    app.post('/adm/add_restaurant_info',authToAdm,adm.addRestaurant);
+    app.post('/adm/change_customer_info/upload_restaurant',authToAdm,adm.upload_restaurant);
+    //res adm
+    app.get('/res_adm/get_res',authToRes_adm,resadm.get_res);
+    app.get('/res_adm/choose_restaurant/:id',authToRes_adm,dish.change_dish_info);
+    app.get('/res_adm/change_dish_info/findall/:res_id',authToRes_adm,dish.findalldish);
+    app.get('/res_adm/change_dish_info/add',authToRes_adm,dish.addpageDish);
+    app.post('/res_adm/add_dish_info',authToRes_adm,dish.addDish);
+    app.delete('/res_adm/change_dish_info/delete/:res_ids',authToRes_adm,dish.deleteDish);
+    app.get('/res_adm/change_dish_info/edit/:id',authToRes_adm,dish.dishpageEdit);
+    app.post('/res_adm/edit_dish_info/update',authToRes_adm,dish.updateDish);
+    app.post('/res_adm/change_dish_info/upload_dish',authToRes_adm,dish.upload_dish);
 
 };

@@ -1,0 +1,40 @@
+script(type='text/javascript', src='/js/res_adm/change_dish_info.js')
+form
+
+    - if (typeof(error) !== 'undefined') {
+        = error
+    - }
+    h1  #{res_name}订单信息管理
+        table(border='0', width='100%')
+                tr
+                    td
+                        form
+                            table(border='0', width='100%')
+                                ////////////////////////增删改区域Start
+                                tr
+                                    td(width='100%', align='left', valign='baseline', colspan=4)
+                                        #page_operate(style='visibility:none;')
+                                            input#res_id(type='hidden', name='res_id',value='#{res_id}')
+                                            input#add_btn.btn(type='button', value='新增菜品')
+                                            input#edit_btn.btn(type='button', value='修改选中行')
+                                            input#del_btn.btn(type='button', value='删除选中行')
+        #popDialog
+        table#change_dish_info_table
+        #change_dish_info_pager
+    h1  #{res_name}菜品信息管理
+    table(border='0', width='100%')
+            tr
+                td
+                    form
+                        table(border='0', width='100%')
+                            ////////////////////////增删改区域Start
+                            tr
+                                td(width='100%', align='left', valign='baseline', colspan=4)
+                                    #page_operate(style='visibility:none;')
+                                        input#res_id(type='hidden', name='res_id',value='#{res_id}')
+                                        input#add_btn.btn(type='button', value='新增菜品')
+                                        input#edit_btn.btn(type='button', value='修改选中行')
+                                        input#del_btn.btn(type='button', value='删除选中行')
+    #popDialog
+    table#change_dish_info_table
+    #change_dish_info_pager

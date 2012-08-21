@@ -12,11 +12,6 @@
  * Time: 下午4:53
  * To change this template use File | Settings | File Templates.
  */
-function update_img() {
-
-}
-
-
 //设置前台页面显示的表格列头
 var colNames = ['编号', '用户名', '密码', '姓名','电话','电子邮件','头像'];
 //设置前台页面显示的表格数据
@@ -69,7 +64,9 @@ $(function(){
         autoOpen: false,
         modal: true,
         height: 600,
-        width: 600
+        width: 600,
+        hide: 'fade',
+        show: 'fade'
     });
 
     $("#edit_btn").click(function(){
@@ -77,15 +74,52 @@ $(function(){
         var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
         var sel = rowData.id;
         if(sels==""){
-            $().message("请选择要修改的项！");
+            alert("请选择要修改的项！");
         }else{
             if(sels.toString().indexOf(',') > 0){
-                $().message("只可选择一项进行修改！");
+                alert("只可选择一项进行修改！");
             }else{
-                //$().message("修改信息成功！");
                 $("#popDialog").dialog({
                     open: function(event, ui) {
-                        $(this).load('/adm/change_customer_info/edit/'+sel);
+                        $(this).load('/adm/change_customer_info/edit/'+sel,function() {
+                            //avatar_upload
+                            var avatar = $('img#avatar');
+                            avatar.mouseover(function() {
+                                avatar.css("border","2px dotted red");
+                            });
+                            avatar.mouseout(function() {
+                                avatar.css("border","none");
+                            });
+                            avatar.click(function() {
+                                $("#uploadinfo").css("visibility","hidden");
+                                $("#uploadarea").css("visibility","visible");
+                            });
+
+                            var imageUpload = $('#imageUpload').interval;
+                            new AjaxUpload('avatarUpload', {
+                                action: '/adm/change_customer_info/upload_avatar',
+                                name: 'avatar',
+                                autoSubmit: true,
+                                responseType: 'json',
+                                onSubmit: function(file, extension) {
+                                    //alert('onSubmit');
+                                    $('div.preview').addClass('loading');
+                                },
+                                onComplete: function(file, response) {
+                                    //alert('onComplete');
+                                    /*avatar.load(function(){
+                                     $('div.preview').removeClass('loading');
+                                     avatar.unbind();
+                                     });*/
+                                    //var r = JSON.parse(response);
+                                    avatar.attr('src', response.avatar_src);
+                                    $("#img_src").val(response.avatar_src);
+                                    $("span#uploadinfo").text(response.message);
+                                    $("span#uploadinfo").css("visibility","visible");
+                                    $("span#uploadarea").css("visibility","hidden");
+                                }
+                            });
+                        });
                     },
                     title: '修改用户信息'
                 });
@@ -96,13 +130,23 @@ $(function(){
     });
     $("#del_btn").click(function(){
         var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
-        var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
-        var sel = rowData.id;
+        var sel = "";
         if(sels==""){
-            $().message("请选择要删除的项！");
+            alert("请选择要删除的项！");
         }else{
             if(confirm("您是否确认删除？")){
-                //$().message("删除成功！");
+                var arr = sels.toString().split(',');
+                $.each(arr,function(i,n){
+                    if(arr[i]!=""){
+                        var rowData = $("#change_customer_info_table").jqGrid("getRowData", arr[i]);
+                        if(i == 0){
+                            sel = rowData.id;
+                        }
+                        else{
+                            sel = sel + ',' + rowData.id;
+                        }
+                    }
+                });
                 $.ajax({
                     type: "delete",
                     url: "/adm/change_customer_info/delete/"+sel,
@@ -115,13 +159,12 @@ $(function(){
                     },
                     success: function(msg){
                         if(200 == msg.status){
-                            var arr = sels.toString().split(',');
                             $.each(arr,function(i,n){
                                 if(arr[i]!=""){
-                                    $("#change_customer_info_table").jqGrid('delRowData',n);
+                                    $("#change_customer_info_table").jqGrid('delRowData',arr[i]);
+                                    $().message("已成功删除!");
                                 }
                             });
-                            $().message("已成功删除!");
                         }else{
                             $().message("操作失败！");
                         }
@@ -130,5 +173,29 @@ $(function(){
             }
         }
     });
-
+    $("#authority_btn").click(function(){
+        var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
+        var sel = rowData.id;
+        if(sels==""){
+            alert("请选择要修改的项！");
+        }else{
+            if(sels.toString().indexOf(',') > 0){
+                alert("只可选择一项进行修改！");
+            }else{
+                if(sel == '101'){
+                    alert("不可以修改系统管理员admin的权限！");
+                    return;
+                }
+                $("#popDialog").dialog({
+                    open: function(event, ui) {
+                        $(this).load('/adm/change_customer_info/authority/'+sel);
+                    },
+                    title: '添加店铺权限'
+                });
+                $("#popDialog").dialog("open");
+                return false;
+            }
+        }
+    });
 });

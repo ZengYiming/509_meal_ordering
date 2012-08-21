@@ -1,39 +1,36 @@
-script(type='text/javascript', src='/js/adm/edit_customer_info.js')
+script(type='text/javascript', src='/js/adm/edit_restaurant_info.js')
 p
-    h4 更改头像:
+    h4 更改店铺图片:
 p
     div.preview
-        img(src='#{avatar_src}',id='avatar', name='avatar', alt='avatar', height=100, width=100)
-    span#uploadinfo 点击图片更新头像
+        img(src='#{restaurant_src}',id='restaurant', name='restaurant', alt='restaurant', height=100, width=100)
+    span#uploadinfo 点击图片更新店铺图片
     div#uploadarea(style="visibility:hidden")
-        input#avatarUpload(type="button", value="上传头像")
+        input#restaurantUpload(type="button", value="上传店铺图片")
 .form-container
     form#add_form
         fieldset#goodsContent
-            legend(style='color: #C00; font-style: normal;') 用户信息
+            legend(style='color: #C00; font-style: normal;') 店铺信息
             div
                 label  编号：#{locals.id?id:''}
             div
-                label.error   用户名：
-                input#username.allowInput(type='text', name='username')
-            div
-                label  密码：
-                input#password.allowInput(type='text', name='password')
-            div
-                label.error  姓名：
+                label.error   店铺名称：
                 input#name.allowInput(type='text', name='name')
             div
                 label  电话：
                 input#tel.allowInput(type='text', name='tel')
             div
-                label.error  电子邮件：
-                input#email.allowInput(type='text', name='email')
+                label.error  地址：
+                input#address.allowInput(type='text', name='address',size='70')
+            div
+                label  简要介绍：
+                input#intro.allowInput(type='text', name='intro',size='100')
         fieldset
             legend
             div
                 //input(type='hidden', name='_csrf', value='#{csrf}')
                 //input#_id(type='hidden', name='_id',value='#{locals._id?_id:''}')
                 //input#pageState(type='hidden', name='pageState', value='#{pageState}')
-                input#img_src(type='hidden', name='img_src',value='#{avatar_src}')
+                input#img_src(type='hidden', name='img_src',value='#{restaurant_src}')
                 input#save.btn(type='button', value=' 保 存 ')
                 input#close.btn(type='button', value=' 关 闭 ', onclick='$("#popDialog").dialog("close");')

@@ -1,0 +1,31 @@
+script(type='text/javascript', src='/js/res_adm/add_dish_info.js')
+p
+    h4 上传菜品图片:
+p
+    div.preview
+        img(src='#{dish_src}',id='dish', name='dish', alt='dish', height=100, width=100)
+    span#uploadinfo 点击图片上传菜品图片
+    div#uploadarea(style="visibility:hidden")
+        input#dishUpload(type="button", value="上传菜品图片")
+.form-container
+    form#add_form
+        fieldset#goodsContent
+            legend(style='color: #C00; font-style: normal;') 添加菜品
+            div
+                label.error   菜品名称：
+                input#name.allowInput(type='text', name='name')
+            div
+                label.error  菜品价格：
+                input#price.allowInput(type='text', name='price')
+            div
+                label.error  菜品简要介绍：
+                input#intro.allowInput(type='text', name='intro',size='100')
+        fieldset
+            legend
+            div
+                //input(type='hidden', name='_csrf', value='#{csrf}')
+                //input#_id(type='hidden', name='_id',value='#{locals._id?_id:''}')
+                //input#pageState(type='hidden', name='pageState', value='#{pageState}')
+                input#img_src(type='hidden', name='img_src',value='#{dish_src}')
+                input#save.btn(type='button', value=' 保 存 ')
+                input#close.btn(type='button', value=' 关 闭 ', onclick='$("#popDialog").dialog("close");')
