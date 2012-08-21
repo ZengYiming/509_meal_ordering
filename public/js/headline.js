@@ -16,13 +16,13 @@ $(document).ready(function() {
         position: [530, 100]
     });
 
-    //credit
-    $('#credit').mouseenter(function() {
-        $('#credit_sub').show();
+    /*//credit
+    $('#credits').mouseenter(function() {
+        $('#credits_sub').show();
     });
-    $('#credit').mouseleave(function() {
-        $('#credit_sub').hide();
-    });
+    $('#credits').mouseleave(function() {
+        $('#credits_sub').hide();
+    });*/
 
     //logo
     $('#logo_head').mouseenter(function() {
@@ -58,6 +58,16 @@ $(document).ready(function() {
         show_homepage();
     });
 
+    //signup
+    $('#signup').click(function() {
+        signup();
+    });
+
+    //credits
+    $('#credits').mouseenter(function() {
+        show_credits();
+    });
+
 });
 
 function setHeadLine() {
@@ -70,11 +80,72 @@ function setHeadLine() {
         success: function (data, textStatus) {
 //                console.log("data:"+JSON.stringify(data));
             $('#menu').html(data);
+            $('#out_menu')
+                .css({ 'top':-50 })
+                .delay(700)
+                .animate({'top': 0}, 800);
         },
         error: function () {
             $().message("获取信息失败！");
         }
     });
+}
+
+function show_credits() {
+    $.ajax({
+        type: "get",
+        url:  "/show_credits",
+        dataType: "html",
+        global: false,
+        async: false,
+        success: function (data, textStatus) {
+            $('#credits').html(data);
+            $('#credits_sub').show();
+            $('#credits').mouseleave(function() {
+                $('#credits_sub').hide();
+            });
+        },
+        error: function () {
+            $().message("获取信息失败！");
+        }
+    });
+}
+
+function signup() {
+    $('#homeDialog').dialog({
+        open: function(event, ui) {
+            $(this).load('/signup', function() {
+                $('#signup_submit').click(function() {
+                    var username = $('#signup_username').val();
+                    var password = $('#signup_password').val();
+                    var re_pass = $('#signup_re_pass').val();
+                    var name = $('#signup_name').val();
+                    var tel = $('#signup_tel').val();
+                    var email = $('#signup_email').val();
+                    var signup_json = {username: username, password: password, re_pass: re_pass, name: name, tel: tel, email: email};
+                    $.ajax({
+                        type: "post",
+                        url:  "/signup",
+                        dataType: "json",
+                        global: false,
+                        async: false,
+                        data: signup_json,
+                        success: function (data, textStatus) {
+                            $().message("注册成功！");
+                            $("#homeDialog").dialog("close");
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            var res = JSON.parse(XMLHttpRequest.responseText);
+                            $('p#error').html(res.error);//有错
+                        }
+                    });
+                });
+            });
+        },
+        title: '用户注册'
+    });
+    $('#homeDialog').dialog('open');
+    return false;
 }
 
 function show_homepage() {
@@ -89,9 +160,46 @@ function show_homepage() {
             $('#main_container').html(data);
             $('#main_container').imagesLoaded(function() {
                 $('#main_container').BlocksIt({
-                    numOfCol: 5,
+                    numOfCol: 3,
                     offsetX: 8,
                     offsetY: 8
+                });
+            });
+
+            $('a.res_img').click(function() {
+                var res_id = $(this).attr('name');
+                //alert('res_id: ' + res_id);
+                $.ajax({
+                    type: "get",
+                    url:  "/dish_list/" + res_id,
+                    dataType: "html",
+                    global: false,
+                    async: false,
+                    success: function (data, textStatus) {
+                        $('#main_container').html(data);
+                        $('#main_container').imagesLoaded(function() {
+                            $('#main_container').BlocksIt({
+                                numOfCol: 4,
+                                offsetX: 8,
+                                offsetY: 8
+                            });
+                        });
+                        $('.dish_img').fancybox({
+                            /*type:'image',
+                            autoSize : true,
+                            openEffect	: 'elastic',
+                            closeEffect	: 'elastic',
+                            helpers : {
+                                title : {
+                                    type : 'inside'
+                                }
+                            }*/
+                        });
+                        $('.dish_info_btn').fancybox();
+                    },
+                    error: function () {
+                        $().message("获取信息失败！");
+                    }
                 });
             });
         },

@@ -51,9 +51,9 @@ html
           //ajax-upload
           script(type='text/javascript', src='/libs/ajax-upload/ajaxupload.js')
           //imagesloaded
-          script(type='text/javascript', src='/libs/jquery.imagesloaded.min.js')
+          script(type='text/javascript', src='/libs/imagesloaded/jquery.imagesloaded.min.js')
           //blocksit
-          script(type='text/javascript', src='/libs/blocksit.min.js')
+          script(type='text/javascript', src='/libs/blocksit/blocksit.min.js')
 
           //other
           script(type='text/javascript', src='/libs/jqGrid_fancybox/js/jquery.form.js')
@@ -67,21 +67,18 @@ html
         .navbar
           .navbar-inner
             .container
-              div(style='margin-left: 50px;')
+              div#out_menu(style='margin-left: 50px;')
                   ul#menu
                   img(style='float: left;', alt='', src='/image/headline/menu_right.png')
               div(style='float: none; clear: both;')
         //
            wrapper
-        #wrapper
+        section#wrapper
             #main
-                - if (typeof(error) !== 'undefined') {
-                    != error
-                - }
                 #homeDialog
                 #main_container
                 != body
-        //
+      //
            footer
         #footer
           #footer_main

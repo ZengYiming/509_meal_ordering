@@ -63,8 +63,10 @@ exprots = module.exports = function(app) {
     //site
     app.get('/', site.index);
     app.post('/headline', site.headLine);
-    app.get('/dish_info', site.dish_info);
+    app.get('/dish_info/:dish_id', site.dish_info);
     app.get('/homepage', site.homepage);
+    app.get('/dish_list/:res_id', site.dish_list);
+    app.get('/show_credits', site.show_credits);
 
     // sign up, login, logout
     app.get('/signin', sign.showLogin);

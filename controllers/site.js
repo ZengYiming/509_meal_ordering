@@ -14,6 +14,7 @@ var models = require('../models');
 var Restaurant = models.Restaurant;
 var Dish = models.Dish;
 
+var sys = require('sys');
 var url = require('url');
 
 exports.index = function(req, res, next){
@@ -23,7 +24,6 @@ exports.index = function(req, res, next){
         return;
     });*/
     res.render('index');
-
 };
 
 exports.homepage = function(req, res, next) {
@@ -34,7 +34,7 @@ exports.homepage = function(req, res, next) {
             var restaurant = result[k];
             rsLine += '<div class="grid">' +
                 '<div class="imgholder">' +
-                '<a href="#"><img src="' + restaurant.image + '" /></a>' +
+            '<a class="res_img" name="' + restaurant.id + '" href="#"><img src="' + restaurant.image + '" /></a>' +
                 '</div>' +
                 '<strong>' + restaurant.name + '</strong>' +
                 '<p>' + restaurant.intro + '</p>' +
@@ -42,7 +42,7 @@ exports.homepage = function(req, res, next) {
                 '   <p>地址：' + restaurant.address + '</p>' +
                 '   <p>电话：' + restaurant.tel + '</p>' +
                 '</div>' +
-                '</div>';
+            '</div>';
         }
         res.write(rsLine);
         res.end();
@@ -50,11 +50,44 @@ exports.homepage = function(req, res, next) {
     });
 };
 
+exports.dish_list = function(req, res, next) {
+    var res_id = req.params.res_id;
+    Restaurant.findOne({id: res_id}, function(error, restaurant) {
+        if(error) return next(error);
+        var res_name = restaurant.name;
+        Dish.findAll({where:'AND restaurant_id=' + res_id}, function(err, result) {
+            if(err) return next(err);
+            var rsLine = '';
+            for(var k in result) {
+                var dish = result[k];
+                rsLine += '<div class="grid">' +
+                    '<div class="imgholder">' +
+                    '<a class="dish_img" href="' + dish.image + '" title="' + dish.name + '" rel="dish_gallery" ><img src="' + dish.image + '" /></a>' +
+                    '</div>' +
+                    '<strong>' + dish.name + '</strong>' +
+                    '<p>' + dish.intro + '</p>' +
+                    '<div class="meta">' +
+                        '<p><b>From:' + res_name + '</b>&nbsp;&nbsp;&nbsp;价格：' + dish.price + '</p>' +
+                        '<a class="dish_info_btn" href="/dish_info/' + dish.id + '"><input type="button" value="加入购物车"/></a>' +
+                        //'<input class="deal_add_btn" type="button" value="加入购物车" name="/dish_info/' + dish.id + '"/>' +
+                    '</div>' +
+                    '</div>';
+            }
+            res.write(rsLine);
+            res.end();
+            return;
+        });
+    });
+
+};
+
 exports.dish_info = function(req, res, next) {
-    var dish_id = url.parse(req.url, true).query.id;
+    //var dish_id = url.parse(req.url, true).query.id;
+    console.log('in dish_info');
+    var dish_id = req.params.dish_id;
     Dish.findOne({id: dish_id}, function(err, result) {
         if(err) return next(err);
-        res.render('site/dish_info', {title: '菜品详情', dish: result});
+        res.render('site/dish_info', {layout:false, title: '菜品详情', dish: result});
     });
 };
 
@@ -77,20 +110,7 @@ exports.headLine = function (req, res, next) {
         headline += '<li id="user_info">' + user.name + '</li>';
         //for(var k in user.member) {
             if(has(member, 1)) {
-                headline += '<li id="credit">积分' +
-                    '<ul id="credit_sub">' +
-                        '<li>' +
-                            '<img class="corner_inset_left" alt="" src="/image/headline/corner_inset_left.png"/>' +
-                            '当前积分：98' +
-                            '<img class="corner_inset_right" alt="" src="/image/headline/corner_inset_right.png"/>'+
-                        '</li>' +
-                        '<li class="last">' +
-                            '<img class="corner_left" alt="" src="/image/headline/corner_left.png"/>' +
-                            '<img class="middle" alt="" src="/image/headline/dot.gif"/>' +
-                            '<img class="corner_right" alt="" src="/image/headline/corner_right.png"/>' +
-                        '</li>' +
-                    '</ul>'+
-                    '</li>';
+                headline += '<li id="credits">积分</li>';
                 headline += '<li id="shopping_cart">我的购物车</li>';
                 headline += '<li id="orders">我的订单</li>';
             }
@@ -104,12 +124,13 @@ exports.headLine = function (req, res, next) {
         //}
         headline += '<li><a href="/signout">退出</a></li>';
     }else {
-        headline += '<li><a href="/signin/">登录</a></li>' + '<li><a href="/signup/">注册</a></li>';
+        headline += '<li><a id="signin" href="/signin">登录</a></li>' + '<li><a id="signup">注册</a></li>';
     }
 
     function has(member, role) {
         for(var k in member) {
             var value = member[k];
+            if(value.credits) req.session.user.credits = value.credits;
             if(value.role == role) return true;
         }
         return false;
@@ -117,4 +138,24 @@ exports.headLine = function (req, res, next) {
 
     res.write(headline);
     res.end();
+};
+
+exports.show_credits = function(req, res, next) {
+    var user = req.session.user;
+    //console.log("in show_credits, member: " + sys.inspect(member));
+    var credits_line = '积分<ul id="credits_sub">' +
+        '<li>' +
+        '<img class="corner_inset_left" alt="" src="/image/headline/corner_inset_left.png"/>' +
+        '当前积分：' + user.credits +
+        '<img class="corner_inset_right" alt="" src="/image/headline/corner_inset_right.png"/>'+
+        '</li>' +
+        '<li class="last">' +
+        '<img class="corner_left" alt="" src="/image/headline/corner_left.png"/>' +
+        '<img class="middle" alt="" src="/image/headline/dot.gif"/>' +
+        '<img class="corner_right" alt="" src="/image/headline/corner_right.png"/>' +
+        '</li>' +
+        '</ul>';
+    res.write(credits_line);
+    res.end();
+    return;
 };

@@ -32,12 +32,14 @@ exports.signup = function(req,res,next){
         createMember(user_id);
     });
     ep.on('member', function(user_id) {
-        res.render('index', {error: '注册成功。'});
+        //res.render('index', {error: '注册成功。'});
+        res.json({}, 200);
+        return;
     });
 
 	var method = req.method.toLowerCase();
 	if(method == 'get'){
-		res.render('sign/signup.jade',{title: '用户注册'});
+		res.render('sign/signup.jade',{layout: false, title: '用户注册'});
 		return;
 	}
 	if(method == 'post'){
@@ -57,43 +59,50 @@ exports.signup = function(req,res,next){
 		email = sanitize(email).xss();
 		
 		if(username == '' || pass =='' || re_pass == '' || tel ==''){
-			res.render('sign/signup.jade', {error:'信息不完整。',name:name,tel:tel,email:email});
+			//res.render('sign/signup.jade', {error:'信息不完整。',name:name,tel:tel,email:email});
+            res.json({status: 412, error: '信息不完整'}, 412);
 			return;
 		}
 
 		if(username.length < 6){
-			res.render('sign/signup.jade', {error:'用户名至少需要6个字符。',name:name,tel:tel,email:email});
+			//res.render('sign/signup.jade', {error:'用户名至少需要6个字符。',name:name,tel:tel,email:email});
+            res.json({status: 400, error: '用户名至少需要6个字符'}, 400);
 			return;
 		}
 
         if(pass.length < 6){
-            res.render('sign/signup.jade', {error:'密码至少需要6个字符。',name:name,tel:tel,email:email});
+            //res.render('sign/signup.jade', {error:'密码至少需要6个字符。',name:name,tel:tel,email:email});
+            res.json({status: 400, error: '密码至少需要6个字符'}, 400);
             return;
         }
 
 		try{
 			check(username, '用户名只能使用0-9，a-z，A-Z。').isAlphanumeric();
 		}catch(e){
-			res.render('sign/signup.jade', {error:e.message,name:name,tel:tel,email:email});
+			//res.render('sign/signup.jade', {error:e.message,name:name,tel:tel,email:email});
+            res.json({status: 400, error: e.message}, 400);
 			return;
 		}
 
 		if(pass != re_pass){
-			res.render('sign/signup.jade', {error:'两次密码输入不一致。',name:name,tel:tel,email:email});
+			//res.render('sign/signup.jade', {error:'两次密码输入不一致。',name:name,tel:tel,email:email});
+            res.json({status: 400, error: '两次密码输入不一致'}, 400);
 			return;
 		}
 			
 		try{
 			check(email, '不正确的电子邮箱。').isEmail();
 		}catch(e){
-			res.render('sign/signup.jade', {error:e.message,name:name,tel:tel,email:''});
+			//res.render('sign/signup.jade', {error:e.message,name:name,tel:tel,email:''});
+            res.json({status: 400, error: e.message}, 400);
 			return;
 		}
 
 		User.find({'username':username},function(err,users){
 			if(err) return next(err);
 			if(users.length > 0){
-				res.render('sign/signup', {error:'用户名已被使用。',name:name,tel:tel,email:email});
+				//res.render('sign/signup', {error:'用户名已被使用。',name:name,tel:tel,email:email});
+                res.json({status: 400, error: '用户名已被使用'}, 400);
 				return;
 			}
 			

@@ -265,7 +265,7 @@
     #main {
         width: 960px;
         margin: 0px auto;
-        padding: 10px 0px 30px 0px;
+        padding: 60px 0px 30px 0px;
         min-height:700px;
     }
     #content {
@@ -291,10 +291,12 @@
     /* custom bootstrap */
     .navbar {
         margin-bottom: 0px;
+        /*position:fixed;*/
     }
     .navbar .container {
         width: 960px;
         margin: 0px auto;
+
     }
     .navbar .navbar-inner{
         -webkit-border-radius: 0px;
@@ -305,9 +307,13 @@
         background-image: none;
         background-color: #323f4b;
     }
+    #out_menu{
+        position:fixed;
+        z-index:999;
+    }
 
     /* menu */
-    #menu{ margin:0px; padding:0px; list-style:none; color:#fff; line-height:45px; display:inline-block; float:left; z-index:1000; }
+    #menu{ margin:0px; padding:0px; list-style:none; color:#fff; line-height:45px; display:inline-block; float:left; z-index:999; }
     #menu a { color:#fff; text-decoration:none; }
     #menu > li {background:#172322 none repeat scroll 0 0; cursor:pointer; float:left; position:relative;padding:0px 10px;}
     /*#menu > li a:hover {color:#B0D730;}*/
@@ -362,12 +368,18 @@
 
 
     /* container css */
+    /*body{
+        overflow-x:hidden;
+    }
+    #out_menu, section{
+        display:block;
+    }*/
+
     #main_container{
         position:relative;
         width:1100px;
         margin:0 auto 25px;
         padding-bottom: 10px;
-
     }
     .grid{
         width:188px;
@@ -403,4 +415,23 @@
         max-width:100%;
         background:#ccc;
         display:block;
+    }
+
+    @media screen and (max-width : 1240px) {
+        body{
+            overflow:auto;
+        }
+    }
+    @media screen and (max-width : 900px) {
+        #backlinks{
+            float:none;
+            clear:both;
+        }
+        #backlinks a{
+            display:inline-block;
+            padding-right:20px;
+        }
+        #wrapper{
+            margin-top:90px;
+        }
     }

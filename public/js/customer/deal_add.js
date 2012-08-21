@@ -6,7 +6,31 @@
  * To change this template use File | Settings | File Templates.
  */
 
+$(document).ready(function() {
+    $('#add_deal').click(function() {
+        var quantity = $('#info_dish_quantity').val();
+        var id = $('#info_dish_id').val();
+        $.ajax({
+            type: "post",
+            url:  "/customer/shopping_cart_add",
+            dataType: "html",
+            global: false,
+            async: false,
+            data: {id: id, quantity: quantity},
+            success:function (data, textStatus) {
+//                console.log("data:"+JSON.stringify(data));
+            $('#info').html(data);
+        },
+        error: function () {
+            $().message("获取信息失败！");
+        }
+    });
+    });
 
+});
+
+
+/*
 function deal_add() {
     var xmlhttp;
     if (window.XMLHttpRequest)
@@ -22,9 +46,11 @@ function deal_add() {
         if (xmlhttp.readyState==4 && xmlhttp.status==200) {
             document.getElementById('info').innerHTML = xmlhttp.responseText;
         }
-       /* else {
+       */
+/* else {
             document.getElementById('tmp').innerHTML = '无权限进行此操作';
-        }*/
+        }*//*
+
     }
 
     var quantity = document.getElementById('quantity').value;
@@ -35,4 +61,4 @@ function deal_add() {
     xmlhttp.send("id=" + id +  "&quantity=" + quantity);
     xmlhttp.send();
 
-}
+}*/
