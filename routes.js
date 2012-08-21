@@ -65,6 +65,7 @@ exprots = module.exports = function(app) {
     app.get('/', site.index);
     app.post('/headline', site.headLine);
     app.get('/dish_info', site.dish_info);
+    app.get('/homepage', site.homepage);
 
     // sign up, login, logout
     app.get('/signin', sign.showLogin);

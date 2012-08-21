@@ -266,7 +266,7 @@
         width: 960px;
         margin: 0px auto;
         padding: 10px 0px 30px 0px;
-        min-height:400px;
+        min-height:700px;
     }
     #content {
         margin: 0px 272px 0px 0px;
@@ -321,7 +321,7 @@
     #menu li ul li a { display:block; color:#0395CC; }
     #menu li ul li a:hover { color:#7FCDFE; }
     /* main submenu */
-    #menu #main {left:0px; top:-20px;padding-top:20px; background-color:#7cb7e3; color:#fff; z-index:999;}
+    #menu #logo_sub {left:0px; top:-20px;padding-top:20px; background-color:#7cb7e3; color:#fff; z-index:999;}
     /* search */
     .searchContainer div { background-color:#fff; display:inline; padding:5px;}
     .searchContainer input[type="text"] {border:none;}
@@ -359,3 +359,48 @@
     #menu #resadm_sub .corner_left { position:absolute; left:0px; top:0px;}
     #menu #resadm_sub .corner_right { position:absolute; left:132px; top:0px;}
     #menu #resadm_sub .middle { position:absolute; left:18px; height: 20px; width: 115px; top:0px;}
+
+
+    /* container css */
+    #main_container{
+        position:relative;
+        width:1100px;
+        margin:0 auto 25px;
+        padding-bottom: 10px;
+
+    }
+    .grid{
+        width:188px;
+        min-height:100px;
+        padding: 15px;
+        background:#fff;
+        margin:8px;
+        font-size:12px;
+        float:left;
+        box-shadow: 0 1px 3px rgba(34,25,25,0.4);
+        -moz-box-shadow: 0 1px 3px rgba(34,25,25,0.4);
+        -webkit-box-shadow: 0 1px 3px rgba(34,25,25,0.4);
+
+        -webkit-transition: top 1s ease, left 1s ease;
+        -moz-transition: top 1s ease, left 1s ease;
+        -o-transition: top 1s ease, left 1s ease;
+        -ms-transition: top 1s ease, left 1s ease;
+    }
+
+    .grid strong {
+        border-bottom:1px solid #ccc;
+        margin:10px 0;
+        display:block;
+        padding:0 0 5px;
+        font-size:17px;
+    }
+    .grid .meta{
+        text-align:right;
+        color:#777;
+        font-style:italic;
+    }
+    .grid .imgholder img{
+        max-width:100%;
+        background:#ccc;
+        display:block;
+    }
