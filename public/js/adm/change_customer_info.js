@@ -173,7 +173,7 @@ $(function(){
             }
         }
     });
-    $("#authority_btn").click(function(){
+    $("#authority_add_btn").click(function(){
         var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
         var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
         var sel = rowData.id;
@@ -189,9 +189,34 @@ $(function(){
                 }
                 $("#popDialog").dialog({
                     open: function(event, ui) {
-                        $(this).load('/adm/change_customer_info/authority/'+sel);
+                        $(this).load('/adm/change_customer_info/authority/add/'+sel);
                     },
                     title: '添加店铺权限'
+                });
+                $("#popDialog").dialog("open");
+                return false;
+            }
+        }
+    });
+    $("#authority_delete_btn").click(function(){
+        var sels = $("#change_customer_info_table").jqGrid('getGridParam','selarrrow');
+        var rowData = $("#change_customer_info_table").jqGrid("getRowData", sels);
+        var sel = rowData.id;
+        if(sels==""){
+            alert("请选择要修改的项！");
+        }else{
+            if(sels.toString().indexOf(',') > 0){
+                alert("只可选择一项进行修改！");
+            }else{
+                if(sel == '101'){
+                    alert("不可以修改系统管理员admin的权限！");
+                    return;
+                }
+                $("#popDialog").dialog({
+                    open: function(event, ui) {
+                        $(this).load('/adm/change_customer_info/authority/delete/'+sel);
+                    },
+                    title: '删除店铺权限'
                 });
                 $("#popDialog").dialog("open");
                 return false;

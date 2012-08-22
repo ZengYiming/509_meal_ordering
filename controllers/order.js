@@ -225,3 +225,301 @@ exports.del = function(req, res, next) {
         res.end();
     });
 };
+
+
+exports.findallorder = function(req, res, next){
+    var page = req.query.page;//起始行数 for jqgrid
+    var start = req.query.start;//起始行数
+    var limit = req.query.limit;//每页显示行数
+    var bt = req.query.bt;//交易发生时间起点
+    var et = req.query.et;//交易发生截至时间
+    var sidx = req.query.sidx;//排序字段名
+    var sord = req.query.sord;//排序方式
+    var type_id = req.query.type_id;//商品类型ID
+    var ep = EventProxy.create();
+
+    var res_id = req.params.id;
+    //根据前台页面传入的查询条件，开始拼接where语句
+    var where = ' and id in (select order_id from order_dish where dish_id in (select id from dish where restaurant_id='+res_id+'))';
+
+    function feedback(result) {
+        if(200 == result.status) {
+            if(result.jsonObj) {
+//                var jsonStr = JSON.stringify(result.jsonObj);
+//                console.log('jsonStr:'+jsonStr);
+                return res.json(result.jsonObj, result.status);
+            }else{
+                ep.trigger('error', {status:204, error:'查询结果为空!'});
+            }
+        }
+        else {
+            return res.json(result, result.status);
+        }
+    };
+
+    //当有异常发生时触发
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('findAllForWeb', function(where, count) {
+        findAllForWeb(where, count);
+    });
+
+    Order.count({where:where, bt:bt, et:et}, function(err, count) {
+        if(err) { ep.unbind(); return next(err);}
+        if (!count && !count.count) return ep.trigger('error', {status:204, error:'查询结果为空!'});
+        ep.trigger('findAllForWeb', where, count.count);
+    });
+
+    function findAllForWeb(where, count) {
+        var showElement = ['id', 'user_id', 'submit_time', 'status', 'rec_name','rec_tel','rec_addr'];
+        var state = ['无法制作','订单已提交','菜品制作中','派送中','完成交易'];
+
+        if (!count && !count.count) return ep.trigger('error', {status:204, error:'查询结果为空!'});
+
+        if(!sidx){
+            sidx = 1;
+        }
+
+        // 查询结果总页数
+        var total_pages = 0;
+
+        // 计算查询结果页数
+        if(count > 0 && limit > 0){
+            total_pages = Math.ceil(count/limit);
+        }
+
+        // 若请求页大于总页数，设置请求页为最后一页
+        if (page > total_pages) page = total_pages;
+
+        // 计算起始行
+        var start = limit * page - limit;
+        // 若起始行为0
+        if(start < 0) start = 0;
+
+        Order.findAll({where:where, start:start, limit:limit, sidx:sidx, sord:sord, bt:bt, et:et}, function(err, rs) {
+            if(err) { ep.unbind(); return next(err);}
+            if (!rs || rs == undefined) return ep.trigger('error', {status:204, error:'查询结果为空！'});
+            //开始汇总
+            var jsonObj = new Object();
+
+            jsonObj.page = page;  // 当前页
+            jsonObj.total = total_pages;    // 总页数
+            jsonObj.records = count;  // 总记录数
+
+            //定义rows 数组，保存所有rows数据
+            var rowsArray = new Array();
+            for(var i=0; i<rs.length; i++){
+                // 定义rows
+                var rows = new Object();
+                rows.id = rs[i].id;
+                //rows.cell = rs[i];
+                var ay = new Array();
+                for(key in rs[i]){
+                    var index = showElement.indexOf(key);
+                    if(index >= 0){
+                        if(index == 3){
+                            ay[index] = state[rs[i][key]];
+                        }
+                        else{
+                            ay[index] = rs[i][key];
+                        }
+                    }
+                }
+                rows.cell = ay;
+                rowsArray[i] = rows;
+            }
+            //将rows数组赋予jsonObj.rows
+            jsonObj.rows = rowsArray;
+
+            var jsonStr = JSON.stringify(jsonObj);
+            console.log('jsonStr-dishes:'+jsonStr);
+            return res.json(jsonObj, 200);
+
+        });
+    };
+};
+exports.showdish = function(req, res, next){
+    var order_id = req.query.order_id;
+    var res_id = req.query.res_id;
+    res.render('res_adm/show_dish_info',{layout:false,order_id:order_id,res_id:res_id});
+};
+exports.finddish = function(req, res, next){
+    var order_id = req.query.order_id;
+    var res_id = req.query.res_id;
+
+    var page = req.query.page;//起始行数 for jqgrid
+    var start = req.query.start;//起始行数
+    var limit = req.query.limit;//每页显示行数
+    var bt = req.query.bt;//交易发生时间起点
+    var et = req.query.et;//交易发生截至时间
+    var sidx = req.query.sidx;//排序字段名
+    var sord = req.query.sord;//排序方式
+    var type_id = req.query.type_id;//商品类型ID
+    var ep = EventProxy.create();
+    //根据前台页面传入的查询条件，开始拼接where语句
+    var where = ' and restaurant_id='+res_id+' and id in (select dish_id from order_dish where order_id='+order_id+')';
+
+    function feedback(result) {
+        if(200 == result.status) {
+            if(result.jsonObj) {
+//                var jsonStr = JSON.stringify(result.jsonObj);
+//                console.log('jsonStr:'+jsonStr);
+                return res.json(result.jsonObj, result.status);
+            }else{
+                ep.trigger('error', {status:204, error:'查询结果为空!'});
+            }
+        }
+        else {
+            return res.json(result, result.status);
+        }
+    };
+
+    //当有异常发生时触发
+    ep.once('error', function(result) {
+        ep.unbind();//remove all event
+        return feedback(result);
+    });
+    ep.on('findAllForWeb', function(where, count) {
+        findAllForWeb(where, count);
+    });
+
+    Dish.count({where:where, bt:bt, et:et}, function(err, count) {
+        if(err) { ep.unbind(); return next(err);}
+        if (!count && !count.count) return ep.trigger('error', {status:204, error:'查询结果为空!'});
+        ep.trigger('findAllForWeb', where, count.count);
+    });
+
+    function findAllForWeb(where, count) {
+        var showElement = ['id', 'name'];
+        //var state = ['无法制作','订单已提交','菜品制作中','派送中','完成交易'];
+
+        if (!count && !count.count) return ep.trigger('error', {status:204, error:'查询结果为空!'});
+
+        if(!sidx){
+            sidx = 1;
+        }
+
+        // 查询结果总页数
+        var total_pages = 0;
+
+        // 计算查询结果页数
+        if(count > 0 && limit > 0){
+            total_pages = Math.ceil(count/limit);
+        }
+
+        // 若请求页大于总页数，设置请求页为最后一页
+        if (page > total_pages) page = total_pages;
+
+        // 计算起始行
+        var start = limit * page - limit;
+        // 若起始行为0
+        if(start < 0) start = 0;
+
+        Dish.findAll({where:where, start:start, limit:limit, sidx:sidx, sord:sord, bt:bt, et:et}, function(err, rs) {
+            if(err) { ep.unbind(); return next(err);}
+            if (!rs || rs == undefined) return ep.trigger('error', {status:204, error:'查询结果为空！'});
+            //开始汇总
+            var jsonObj = new Object();
+
+            jsonObj.page = page;  // 当前页
+            jsonObj.total = total_pages;    // 总页数
+            jsonObj.records = count;  // 总记录数
+
+            //定义rows 数组，保存所有rows数据
+            var rowsArray = new Array();
+            for(var i=0; i<rs.length; i++){
+                // 定义rows
+                var rows = new Object();
+                rows.id = rs[i].id;
+                //rows.cell = rs[i];
+                var ay = new Array();
+                for(key in rs[i]){
+                    var index = showElement.indexOf(key);
+                    if(index >= 0){
+                        if(index == 3){
+                            ay[index] = state[rs[i][key]];
+                        }
+                        else{
+                            ay[index] = rs[i][key];
+                        }
+                    }
+                }
+                rows.cell = ay;
+                rowsArray[i] = rows;
+            }
+            //将rows数组赋予jsonObj.rows
+            jsonObj.rows = rowsArray;
+
+            var jsonStr = JSON.stringify(jsonObj);
+            console.log('jsonStr-dishes:'+jsonStr);
+            return res.json(jsonObj, 200);
+
+        });
+    };
+};
+exports.confirm = function(req, res, next){
+    var order_id=req.params.id;
+    console.log(order_id);
+    try {
+        //说明是更新数据
+        Order.update({id:order_id,status:2}, function(err,info){
+            if(err) return next(err);
+
+            //res.json({status:200, error:'更新商品信息成功!'}, 200);
+            var jsonObj = {user:{id:info.insertId}};
+            return res.json(jsonObj, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.cancel = function(req, res, next){
+    var order_id=req.params.id;
+    console.log(order_id);
+    try {
+        //说明是更新数据
+        Order.update({id:order_id,status:0}, function(err,info){
+            if(err) return next(err);
+
+            //res.json({status:200, error:'更新商品信息成功!'}, 200);
+            var jsonObj = {user:{id:info.insertId}};
+            return res.json(jsonObj, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.sendd = function(req, res, next){
+    var order_id=req.params.id;
+    console.log(order_id);
+    try {
+        //说明是更新数据
+        Order.update({id:order_id,status:3}, function(err,info){
+            if(err) return next(err);
+
+            //res.json({status:200, error:'更新商品信息成功!'}, 200);
+            var jsonObj = {user:{id:info.insertId}};
+            return res.json(jsonObj, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};
+exports.success = function(req, res, next){
+    var order_id=req.params.id;
+    console.log(order_id);
+    try {
+        //说明是更新数据
+        Order.update({id:order_id,status:4}, function(err,info){
+            if(err) return next(err);
+
+            //res.json({status:200, error:'更新商品信息成功!'}, 200);
+            var jsonObj = {user:{id:info.insertId}};
+            return res.json(jsonObj, 200);
+        });
+    }catch(e){
+        res.json({status:400, error:e.message}, 400);
+    }
+};

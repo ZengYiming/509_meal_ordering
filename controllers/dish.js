@@ -113,7 +113,7 @@ exports.findalldish = function(req, res, next){
             for(var i=0; i<rs.length; i++){
                 // 定义rows
                 var rows = new Object();
-                rows.id = rs[i]._id;
+                rows.id = rs[i].id;
                 //rows.cell = rs[i];
                 var ay = new Array();
                 for(key in rs[i]){

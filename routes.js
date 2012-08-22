@@ -98,8 +98,10 @@ exprots = module.exports = function(app) {
     app.post('/adm/edit_customer_info/update',authToAdm,adm.updateUser);
     app.delete('/adm/change_customer_info/delete/:ids',authToAdm,adm.deleteUser);
     app.post('/adm/change_customer_info/upload_avatar',authToAdm,adm.upload_avatar);
-    app.get('/adm/change_customer_info/authority/:id',authToAdm,adm.authority_customer);
-    app.get('/adm/authority_customer_info/findall/:id',authToAdm,adm.findallauthority);
+    app.get('/adm/change_customer_info/authority/add/:id',authToAdm,adm.authority_customer_add);
+    app.get('/adm/change_customer_info/authority/delete/:id',authToAdm,adm.authority_customer_delete);
+    app.get('/adm/authority_customer_info/findall/:id',authToAdm,adm.findall_add_authority);
+    app.get('/adm/authority_customer_info_delete/findall/:id',authToAdm,adm.findall_delete_authority);
     app.get('/adm/authority_customer_info/add',authToAdm,adm.addauthority);
     app.get('/adm/authority_customer_info/delete',authToAdm,adm.deleteauthority);
     //adm restaurant
@@ -121,5 +123,11 @@ exprots = module.exports = function(app) {
     app.get('/res_adm/change_dish_info/edit/:id',authToRes_adm,dish.dishpageEdit);
     app.post('/res_adm/edit_dish_info/update',authToRes_adm,dish.updateDish);
     app.post('/res_adm/change_dish_info/upload_dish',authToRes_adm,dish.upload_dish);
-
+    app.get('/res_adm/order/findall/:id',authToRes_adm,order.findallorder);
+    app.get('/res_adm/order/dish',authToRes_adm,order.showdish);
+    app.get('/res_adm/order/dish/findall',authToRes_adm,order.finddish);
+    app.get('/res_adm/order/confirm/:id',authToRes_adm,order.confirm);
+    app.get('/res_adm/order/cancel/:id',authToRes_adm,order.cancel);
+    app.get('/res_adm/order/send/:id',authToRes_adm,order.sendd);
+    app.get('/res_adm/order/success/:id',authToRes_adm,order.success);
 };
