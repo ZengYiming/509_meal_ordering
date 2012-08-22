@@ -170,7 +170,7 @@ exports.change_info = function(req, res, next) {
 };
 
 exports.upload_avatar = function(req, res, next) {
-    console.log("in user.js  upload_avatar");
+    //console.log("in user.js  upload_avatar");
     var ep = EventProxy.create();
     var form = new formidable.IncomingForm();
 
@@ -205,7 +205,7 @@ exports.upload_avatar = function(req, res, next) {
             User.update({id: user.id, image: image}, function(err, info) {
                 if(err) next(err);
                 if(info) {
-                    console.log("info: " + sys.inspect(info));
+                    //console.log("info: " + sys.inspect(info));
                     ep.trigger('update');
                 }
             });

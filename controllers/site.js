@@ -103,7 +103,7 @@ exports.headLine = function (req, res, next) {
             '</li>' +
         '</ul>' +
         '</li>' +
-        '<li id="home_page"><a id="homepage">首页</a></li>';
+        '<li id="home_page"><a href="/">首页</a></li>';
     if(req.session.user) {
         var user = req.session.user;
         var member = user.member;

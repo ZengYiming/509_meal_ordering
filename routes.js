@@ -7,6 +7,7 @@
  */
 
 var sys = require("sys");
+var url = require("url");
 
 var site = require("./controllers/site");
 var sign = require("./controllers/sign");
@@ -17,6 +18,9 @@ var adm = require("./controllers/adm");
 var order = require("./controllers/order");
 var resadm = require("./controllers/resadm");
 var dish = require("./controllers/dish");
+
+var test = require('./controllers/test');
+var Auth = require('./controllers/auth');
 
 function auth(req, res, next) {
     if(req.session.user) {
@@ -50,6 +54,7 @@ function auth_role(req, res, next, role) {
 }
 
 var authToCustomer = function(req, res, next) {
+    console.log("in routes.js, url: " + url.parse(req.url).pathname);
     auth_role(req, res, next, 1);
 }
 var authToAdm = function(req, res, next) {
@@ -121,5 +126,14 @@ exprots = module.exports = function(app) {
     app.get('/res_adm/change_dish_info/edit/:id',authToRes_adm,dish.dishpageEdit);
     app.post('/res_adm/edit_dish_info/update',authToRes_adm,dish.updateDish);
     app.post('/res_adm/change_dish_info/upload_dish',authToRes_adm,dish.upload_dish);
+
+
+    //test
+    app.get('/adm', Auth.role_route, test.pass);
+    app.get('/adm/info', Auth.role_route, test.pass);
+    app.get('/adm/other', Auth.role_route, test.pass);
+    app.get('/resadm', Auth.role_route, test.pass);
+    app.get('/resadm/info', Auth.role_route, test.pass);
+    app.get('/resadm/other', Auth.role_route, test.pass);
 
 };

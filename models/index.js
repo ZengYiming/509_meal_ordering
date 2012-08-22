@@ -11,3 +11,6 @@ exports.Dish = require("./dish")();
 exports.Order = require("./order")();
 exports.Order_dish = require("./order_dish")();
 exports.Restaurant = require("./restaurant")();
+exports.Role = require("./role")();
+exports.Role_route = require("./role_route")();
+exports.Route = require("./route")();

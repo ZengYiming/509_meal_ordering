@@ -275,7 +275,7 @@ exports.signout = function(req, res, next) {
     req.session.destroy();
     res.clearCookie(config.auth_cookie_name, { path: '/' });
     if(req.accepts('html')) {
-        res.redirect(req.headers.referer || 'home');
+        res.redirect('home');
     }
     else res.send(200);
 };
