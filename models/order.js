@@ -67,7 +67,24 @@ Orders.prototype.delete = function(id, cb) {
         if(err) return cb(err);
         cb(err, rs);
     });
-}
-
+};
+Orders.prototype.count = function(opt, cb) {
+    var sql = "SELECT COUNT(*) AS count FROM dish where 1=1 "+opt.where;
+    mysql.query(sql, function(err, rs) {
+        if(err) return cb(err);
+        if(!rs.length) return cb(err);
+        cb(err, rs[0]);
+    });
+};
+Orders.prototype.update = function(body, cb) {
+    var opt = {
+        table: 'orders',
+        fields: body
+    };
+    mysql.update(opt, function(err, info) {
+        if(err) return next(err);
+        return cb(err, info);
+    });
+};
 
 exports = module.exports = createOrders;

@@ -1,8 +1,8 @@
 /**
  * Created with JetBrains WebStorm.
  * User: baiweiya
- * Date: 12-8-21
- * Time: 上午11:38
+ * Date: 12-8-22
+ * Time: 下午12:28
  * To change this template use File | Settings | File Templates.
  */
 var colNames = ['店铺编号','店铺名称'];
@@ -12,8 +12,8 @@ var colModel = [
     {name:'name',index:'name', width:300, align:"center",sortable:true}];
 $(function(){
     var cus_id = $("#cus_id").val();
-    jQuery("#authority_customer_info_table").jqGrid({
-        url:'/adm/authority_customer_info/findall/'+cus_id,
+    jQuery("#authority_customer_info_table_delete").jqGrid({
+        url:'/adm/authority_customer_info_delete/findall/'+cus_id,
         datatype: "json",
         mtype: 'GET',
         colNames:colNames,
@@ -23,7 +23,7 @@ $(function(){
         multiselectWidth: 10, //设置多选列宽度
         rowNum:10,
         rowList:[10,20,30],
-        pager: '#authority_customer_info_pager',
+        pager: '#authority_customer_info_pager_delete',
         sortname: 'id',
         sortorder:'asc',
         viewrecords: true,
@@ -49,28 +49,28 @@ $(function(){
 //            }
         },
         loadError:function(xhr,status,error){
-            $("p").appendTo($("#authority_customer_info_table")).addClass("nodata").html('找不到相关数据！');
+            $("p").appendTo($("#authority_customer_info_table_delete")).addClass("nodata").html('找不到相关数据！');
             $("#del_btn").attr("disabled",true);
         }
     });
-    $("#save").click(function(){
-        var sels = $("#authority_customer_info_table").jqGrid('getGridParam','selarrrow');
+    $("#delete").click(function(){
+        var sels = $("#authority_customer_info_table_delete").jqGrid('getGridParam','selarrrow');
         if(sels==""){
             alert("请选择要管理的店铺！");
         }else{
             if(sels.toString().indexOf(',') > 0){
                 alert("只可选择一项进行修改！");
             }else{
-                if(confirm("您是否确认添加所选店铺的管理权限？")){
+                if(confirm("您是否确认删除所选店铺的管理权限？")){
                     $.ajax({
                         type: "get",
-                        url: "/adm/authority_customer_info/add?cus_id="+cus_id+"&res_id="+sels,
+                        url: "/adm/authority_customer_info/delete?cus_id="+cus_id+"&res_id="+sels,
                         success: function (data, textStatus) {
-                            alert("添加店铺管理权限成功！");
+                            alert("删除店铺管理权限成功！");
                             //$("#popDialog").dialog("close");
-                            $("#authority_customer_info_table").jqGrid('delRowData',sels);
-                            $('#authority_customer_info_table').setGridParam({url:'/adm/authority_customer_info/findall/'+cus_id});
-                            $("#authority_customer_info_table").trigger("reloadGrid", [{current:true}]);
+                            $("#authority_customer_info_table_delete").jqGrid('delRowData',sels);
+                            $('#authority_customer_info_table_delete').setGridParam({url:'/adm/authority_customer_info_delete/findall/'+cus_id});
+                            $("#authority_customer_info_table_delete").trigger("reloadGrid", [{current:true}]);
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
                             var res = JSON.parse(XMLHttpRequest.responseText);

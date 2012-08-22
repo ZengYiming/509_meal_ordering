@@ -4,23 +4,26 @@ form
     - if (typeof(error) !== 'undefined') {
         = error
     - }
+    input#res_id(type='hidden', name='res_id',value='#{res_id}')
     h1  #{res_name}订单信息管理
-        table(border='0', width='100%')
-                tr
-                    td
-                        form
-                            table(border='0', width='100%')
-                                ////////////////////////增删改区域Start
-                                tr
-                                    td(width='100%', align='left', valign='baseline', colspan=4)
-                                        #page_operate(style='visibility:none;')
-                                            input#res_id(type='hidden', name='res_id',value='#{res_id}')
-                                            input#add_btn.btn(type='button', value='新增菜品')
-                                            input#edit_btn.btn(type='button', value='修改选中行')
-                                            input#del_btn.btn(type='button', value='删除选中行')
-        #popDialog
-        table#change_dish_info_table
-        #change_dish_info_pager
+    table(border='0', width='100%')
+            tr
+                td
+                    form
+                        table(border='0', width='100%')
+                            ////////////////////////增删改区域Start
+                            tr
+                                td(width='100%', align='left', valign='baseline', colspan=4)
+                                    #page_operate(style='visibility:none;')
+                                        //input#res_id(type='hidden', name='res_id',value='#{res_id}')
+                                        input#diancai_btn.btn(type='button', value='查看点菜信息')
+                                        input#confirm_btn.btn(type='button', value='确认订单')
+                                        input#cancel_btn.btn(type='button', value='取消订单')
+                                        input#send_btn.btn(type='button', value='派送订单')
+                                        input#success_btn.btn(type='button', value='派送成功')
+    #popDialog1
+    table#change_order_info_table
+    #change_order_info_pager
     h1  #{res_name}菜品信息管理
     table(border='0', width='100%')
             tr
@@ -31,7 +34,6 @@ form
                             tr
                                 td(width='100%', align='left', valign='baseline', colspan=4)
                                     #page_operate(style='visibility:none;')
-                                        input#res_id(type='hidden', name='res_id',value='#{res_id}')
                                         input#add_btn.btn(type='button', value='新增菜品')
                                         input#edit_btn.btn(type='button', value='修改选中行')
                                         input#del_btn.btn(type='button', value='删除选中行')
