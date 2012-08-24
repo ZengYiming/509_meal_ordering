@@ -20,6 +20,10 @@ exports.config = {
         database: "meal_ordering",
         timezone: "Asia/Shanghai"
     },
+    message_queue: {
+        port: 1900,
+        host: '127.0.0.1'
+    },
     redis: {
         port: 6379,
         host: "127.0.0.1"

@@ -8,6 +8,7 @@
 
 var express = require("express");
 var path = require("path");
+var message = require("./libs/mq_server");
 var routes = require("./routes");
 var config = require("./config").config;
 var RedisStore = require("connect-redis")(express);
@@ -36,6 +37,7 @@ app.configure("development", function() {
     app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 
+message(app);
 routes(app);
 
 app.listen(config.port);

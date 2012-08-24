@@ -12,6 +12,8 @@ var Order_dish = models.Order_dish;
 var Dish = models.Dish;
 var Restaurant = models.Restaurant;
 
+var MQClient = require('../libs/mq_client.js');
+
 var url = require('url');
 var EventProxy = require('eventproxy').EventProxy;
 var sanitize = require('validator').sanitize;
@@ -156,14 +158,15 @@ exports.add = function(req, res, next) {
     }
     if(method == 'post') {
         var ep = EventProxy.create();
-        ep.on('order', function(order_id) {
-            create_order_dish(order_id);
-        });
-        ep.on('order_dish', function() {
+        ep.on('create_done', function() {
             clear_shopping_cart();
         });
         ep.on('done', function() {
             //exports.show_list(req, res, next, '订单提交成功');
+            //MQClient.sub('UserLogin', UserLogin);
+            for(var k in res_obj) {
+                MQClient.pub('new_order' + k, '有新订单');
+            }
             res.json({}, 200);
             return;
         });
@@ -181,29 +184,57 @@ exports.add = function(req, res, next) {
         var user = req.session.user;
         var date = new Date();
         var dateTime = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-        console.log("in order.js, dateTime: " + dateTime);
+        //console.log("in order.js, dateTime: " + dateTime);
         var order_body = {user_id: user.id, submit_time: dateTime, status: 1, rec_name: rec_name, rec_tel: rec_tel, rec_addr: rec_addr};
-
-
-        Order.create(order_body, function(err, info) {
-            if(err) return next(err);
-            if(info) {
-                ep.trigger('order', info.insertId);
-            }
+        var res_obj = {},
+            order_ids = [],
+            res_obj_length = 0;
+        for(var k in req.session.shopping_cart) {
+            var dish = req.session.shopping_cart[k].dish;
+            var quantity = req.session.shopping_cart[k].quantity;
+            var res_id = dish.restaurant_id;
+            (res_obj[res_id] = res_obj[res_id] || []).push({dish_id: dish.id, quantity: quantity});
+        }
+        for(var k in res_obj) {
+            res_obj_length += 1;
+        }
+        //console.log('res_obj: ' + sys.inspect(res_obj));
+        //console.log('res_obj.length: ' + res_obj_length);
+        ep.after('order', res_obj_length, function() {
+            create_od();
         });
-
-        function create_order_dish(order_id) {
-            ep.after('create_od', req.session.shopping_cart.length, function() {
-                ep.trigger('order_dish');
+        for(var k in res_obj) {
+            Order.create(order_body, function(err, info) {
+                if(err) return next(err);
+                if(info) {
+                    order_ids.push(info.insertId);
+                    ep.trigger('order');
+                }
             });
-            for(var k in req.session.shopping_cart) {
-                var value = req.session.shopping_cart[k];
-                var od_body = {order_id: order_id, dish_id: value.dish.id, quantity: value.quantity};
-                //console.log("in order.js create_order_dish, od_body: " + sys.inspect(od_body));
-                Order_dish.create(od_body, function(err, info) {
-                    if(err) return next(err);
-                    ep.trigger('create_od');
+        }
+
+        function create_od() {
+            ep.after('create_od_done', res_obj_length, function() {
+                ep.trigger('create_done');
+            });
+            //console.log('order_ids: ' + sys.inspect(order_ids));
+            var num = 0
+            for(var k in res_obj) {
+                var dish_objs = res_obj[k];
+                var order_id = order_ids[num];
+                num += 1;
+                ep.after('create_od', dish_objs.length, function() {
+                    ep.trigger('create_od_done');
                 });
+                for(var i in dish_objs) {
+                    var dish_obj = dish_objs[i];
+                    var od_body = {order_id: order_id, dish_id: dish_obj.dish_id, quantity: dish_obj.quantity};
+                    Order_dish.create(od_body, function(err, info) {
+                        if(err) return next(err);
+                        ep.trigger('create_od');
+                    });
+                }
+                //console.log('dish_objs: ' + sys.inspect(dish_objs));
             }
         }
 

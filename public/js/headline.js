@@ -8,7 +8,7 @@
 
 $(document).ready(function() {
     setHeadLine();
-    show_homepage();
+    //show_homepage();
 
     $("#homeDialog").dialog({
         autoOpen: false,

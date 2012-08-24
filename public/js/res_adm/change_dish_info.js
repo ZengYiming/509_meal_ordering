@@ -417,4 +417,14 @@ $(function(){
         }
     });
 
+    var socket = io.connect('http://127.0.0.1:8888');
+    socket.on('connect', function() {
+        socket.emit('subscribe', {topic:'new_order' + res_id});
+    });
+    socket.on('new_order' + res_id, function(data) {
+        $("#change_order_info_table").trigger("reloadGrid", [{current:true}]);
+        //alert(data);
+        $().message(data);
+    });
+
 });

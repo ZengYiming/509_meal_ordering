@@ -20,7 +20,7 @@ var resadm = require("./controllers/resadm");
 var dish = require("./controllers/dish");
 
 var test = require('./controllers/test');
-var Auth = require('./controllers/auth');
+//var Auth = require('./controllers/auth');
 
 function auth(req, res, next) {
     if(req.session.user) {
@@ -29,7 +29,7 @@ function auth(req, res, next) {
     }else {
         var refer = req.header.referer || 'home';
         req.session._loginReferer = refer;
-        res.render('sign/signin');
+        res.render('sign/signin', {layout: false});
     }
 }
 
@@ -42,7 +42,7 @@ function auth_role(req, res, next, role) {
                 return;
             }
         }
-        res.render('index', {error: '无权限进行此操作'});
+        res.render('index', {layout: false, error: '无权限进行此操作'});
 
     }
     //else res.send(401);
@@ -54,7 +54,7 @@ function auth_role(req, res, next, role) {
 }
 
 var authToCustomer = function(req, res, next) {
-    console.log("in routes.js, url: " + url.parse(req.url).pathname);
+    //console.log("in routes.js, url: " + url.parse(req.url).pathname);
     auth_role(req, res, next, 1);
 }
 var authToAdm = function(req, res, next) {
@@ -135,4 +135,9 @@ exprots = module.exports = function(app) {
     app.get('/res_adm/order/cancel/:id',authToRes_adm,order.cancel);
     app.get('/res_adm/order/send/:id',authToRes_adm,order.sendd);
     app.get('/res_adm/order/success/:id',authToRes_adm,order.success);
+
+    //test
+    /*app.get('/resadm/', Auth.role_route, test.pass);
+    app.get('/resadm/info', Auth.role_route, test.pass);
+    app.get('/resadm/other', Auth.role_route, test.pass);*/
 };

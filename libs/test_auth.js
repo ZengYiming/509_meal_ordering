@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var models = require('../models');
+var models = require('.');
 var Role = models.Role;
 var Role_route = models.Role_route;
 var Route = models.Route;
